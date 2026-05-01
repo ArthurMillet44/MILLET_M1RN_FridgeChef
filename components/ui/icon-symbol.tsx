@@ -15,6 +15,7 @@ const MAPPING = {
   "chevron.right": "chevron-right",
   "rectangle.portrait.and.arrow.right": "logout",
   refrigerator: "kitchen",
+  recipes: "restaurant",
 } satisfies IconMapping;
 
 export function IconSymbol({

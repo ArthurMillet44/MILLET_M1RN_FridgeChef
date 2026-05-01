@@ -43,6 +43,15 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="recipes"
+        options={{
+          title: "Recettes",
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={28} name="recipes" color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }
