@@ -10,6 +10,7 @@ type Props = {
   secureTextEntry?: boolean;
   autoCapitalize?: "none" | "sentences" | "words" | "characters";
   placeholder?: string;
+  autoFocus?: boolean;
 };
 
 /**
@@ -22,6 +23,7 @@ export function Input({
   secureTextEntry = false,
   autoCapitalize = "none",
   placeholder,
+  autoFocus = false,
 }: Props) {
   const { colors } = useAppTheme();
   const [focused, setFocused] = useState(false);
@@ -36,6 +38,7 @@ export function Input({
         secureTextEntry={secureTextEntry}
         autoCapitalize={autoCapitalize}
         autoCorrect={false}
+        autoFocus={autoFocus}
         placeholder={placeholder}
         placeholderTextColor={colors.textSoft}
         onFocus={() => setFocused(true)}
