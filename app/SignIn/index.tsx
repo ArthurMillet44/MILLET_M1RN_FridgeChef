@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { supabase } from "@/lib/supabase";
 import { useAppTheme } from "@/lib/theme";
-import { styles } from "./styles";
+import { styles } from "@/lib/styles/sign-in";
 
 type Mode = "login" | "signup";
 

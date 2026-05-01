@@ -1,17 +1,7 @@
-import { StyleSheet, Text, View } from 'react-native';
-
 import { palette, spacing, typography } from '@/constants/design-system';
+import { StyleSheet } from 'react-native';
 
-export default function FavoritesScreen() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>FAVORIS</Text>
-      <Text style={styles.subtitle}>Tes recettes favorites apparaîtront ici.</Text>
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: palette.bg,
