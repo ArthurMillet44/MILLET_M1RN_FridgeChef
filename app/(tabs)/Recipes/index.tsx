@@ -1,6 +1,6 @@
 import { Text, View } from 'react-native';
 
-import { styles } from './_styles';
+import { styles } from '@/lib/styles/recipes';
 
 export default function RecipesScreen() {
   return (
