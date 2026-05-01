@@ -6,7 +6,7 @@ import "react-native-reanimated";
 
 import { supabase } from "@/lib/supabase";
 import { AppThemeProvider } from "@/lib/theme";
-import SignInScreen from "./sign-in";
+import SignInScreen from "./SignIn";
 
 export const unstable_settings = {
   anchor: "(tabs)",
