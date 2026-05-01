@@ -1,17 +1,7 @@
-import { StyleSheet, Text, View } from 'react-native';
-
 import { palette, spacing, typography } from '@/constants/design-system';
+import { StyleSheet } from 'react-native';
 
-export default function RecipesScreen() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>RECETTES</Text>
-      <Text style={styles.subtitle}>Les suggestions apparaîtront ici.</Text>
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: palette.bg,

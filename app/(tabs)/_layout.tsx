@@ -35,7 +35,7 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="fridge"
+        name="Fridge/index"
         options={{
           title: "Mon Frigo",
           tabBarIcon: ({ color }) => (
@@ -44,7 +44,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="recipes"
+        name="Recipes/index"
         options={{
           title: "Recettes",
           tabBarIcon: ({ color }) => (
@@ -53,7 +53,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="favorites"
+        name="Favorites/index"
         options={{
           title: "Favoris",
           tabBarIcon: ({ color }) => (
