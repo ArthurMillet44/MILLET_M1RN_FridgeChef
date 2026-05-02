@@ -42,6 +42,19 @@ export async function addIngredient(
 }
 
 /**
+ * Modifie le nom d'un ingrédient existant dans la base de données.
+ * @param id L'ID de l'ingrédient à modifier.
+ * @param name Le nouveau nom de l'ingrédient.
+ */
+export async function updateIngredient(id: string, name: string): Promise<void> {
+  const { error } = await supabase
+    .from("ingredients")
+    .update({ name: name.trim() })
+    .eq("id", id);
+  if (error) throw error;
+}
+
+/**
  * Supprime un ingrédient de la base de données en fonction de son ID.
  * @param id L'ID de l'ingrédient à supprimer.
  */
