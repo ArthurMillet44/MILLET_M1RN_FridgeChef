@@ -16,6 +16,7 @@ import {
   addIngredient,
   deleteIngredient,
   getIngredients,
+  updateIngredient,
   type Ingredient,
 } from "@/lib/ingredients";
 import { styles } from "@/lib/styles/fridge";
@@ -28,6 +29,10 @@ export default function FridgeScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
+  // Ingrédient en cours de modification
+  const [editingIngredient, setEditingIngredient] = useState<Ingredient | null>(
+    null,
+  );
 
   // Récupère les ingrédients de l'utilisateur
   useEffect(() => {
@@ -55,24 +60,45 @@ export default function FridgeScreen() {
   }
 
   /**
-   * Ferme la modale d'ajout d'ingrédient et réinitialise le champ de saisie.
+   * Ferme la modale et réinitialise tous les champs, y compris l'ingrédient en édition.
    */
   function closeModal() {
     setModalVisible(false);
     setName("");
+    setEditingIngredient(null);
   }
 
   /**
-   * Ajoute un nouvel ingrédient à la liste et à la base de données.
+   * Ouvre la modale pré-remplie avec le nom de l'ingrédient sélectionné.
+   * @param item L'ingrédient à modifier.
    */
-  async function handleAdd() {
+  function openEditModal(item: Ingredient) {
+    setEditingIngredient(item);
+    setName(item.name);
+    setModalVisible(true);
+  }
+
+  /**
+   * Ajoute un nouvel ingrédient ou met à jour l'existant.
+   */
+  async function handleSubmit() {
     // Ne fait rien si le nom est vide ou si l'utilisateur n'est pas identifié
     if (!name.trim() || !userId) return;
     setLoading(true);
     try {
-      const ingredient = await addIngredient(userId, name);
-      // Met à jour la liste en ajoutant le nouvel ingrédient
-      setIngredients((prev) => [...prev, ingredient]);
+      if (editingIngredient) {
+        // Met à jour le nom dans la base et dans la liste locale
+        await updateIngredient(editingIngredient.id, name);
+        setIngredients((prev) =>
+          prev.map((i) =>
+            i.id === editingIngredient.id ? { ...i, name: name.trim() } : i,
+          ),
+        );
+      } else {
+        // Insère un nouvel ingrédient et l'ajoute à la liste
+        const ingredient = await addIngredient(userId, name);
+        setIngredients((prev) => [...prev, ingredient]);
+      }
       closeModal();
     } finally {
       setLoading(false);
@@ -148,6 +174,15 @@ export default function FridgeScreen() {
               />
             </View>
             <Text style={styles.itemName}>{item.name}</Text>
+            {/* Bouton de modification de l'ingrédient */}
+            <TouchableOpacity
+              onPress={() => openEditModal(item)}
+              style={styles.deleteBtn}
+              hitSlop={8}
+            >
+              <MaterialIcons name="edit" size={20} color={palette.textMuted} />
+            </TouchableOpacity>
+            {/* Bouton de suppression de l'ingrédient */}
             <TouchableOpacity
               onPress={() => handleDelete(item.id)}
               style={styles.deleteBtn}
@@ -168,7 +203,7 @@ export default function FridgeScreen() {
         <MaterialIcons name="add" size={28} color={palette.accentFg} />
       </TouchableOpacity>
 
-      {/* Modale d'ajout d'ingrédient */}
+      {/* Modale d'ajout ou de modification d'un ingrédient */}
       <Modal
         visible={modalVisible}
         transparent
@@ -197,7 +232,12 @@ export default function FridgeScreen() {
               autoCapitalize="words"
               autoFocus
             />
-            <Button label="AJOUTER" onPress={handleAdd} loading={loading} />
+            {/* Le libellé du bouton change selon qu'on ajoute ou modifie */}
+            <Button
+              label={editingIngredient ? "MODIFIER" : "AJOUTER"}
+              onPress={handleSubmit}
+              loading={loading}
+            />
           </View>
         </TouchableOpacity>
       </Modal>
