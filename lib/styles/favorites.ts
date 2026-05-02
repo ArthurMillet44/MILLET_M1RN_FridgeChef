@@ -5,9 +5,11 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: palette.bg,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: spacing.xl,
+  },
+  header: {
+    paddingHorizontal: spacing.xl,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.md,
   },
   title: {
     fontSize: typography.size.title,
@@ -15,11 +17,29 @@ export const styles = StyleSheet.create({
     letterSpacing: typography.tracking.widest,
     color: palette.accent,
     lineHeight: 38,
-    marginBottom: spacing.sm,
   },
   subtitle: {
     fontSize: typography.size.body,
     color: palette.textMuted,
+    marginTop: spacing.sm,
     lineHeight: 20,
+  },
+  grid: {
+    paddingHorizontal: spacing.xl,
+    paddingBottom: spacing.xl,
+    gap: spacing.sm,
+  },
+  emptyContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: spacing.xl,
+    gap: spacing.md,
+  },
+  emptyText: {
+    fontSize: typography.size.body,
+    color: palette.textMuted,
+    textAlign: 'center',
+    lineHeight: 22,
   },
 });
