@@ -13,8 +13,10 @@ import {
 } from "react-native";
 
 import { palette, spacing } from "@/constants/design-system";
+import { isFavorite, toggleFavorite } from "@/lib/favorites";
 import { getMealById, getMealIngredients, type MealDetail } from "@/lib/mealdb";
 import { styles } from "@/lib/styles/recipe-detail";
+import { supabase } from "@/lib/supabase";
 
 export default function RecipeDetailScreen() {
   // Identifiant de la recette transmis par la route (ex. /recipe/52772)
@@ -23,6 +25,10 @@ export default function RecipeDetailScreen() {
   const [meal, setMeal] = useState<MealDetail | null>(null);
   // Indique si les données sont en cours de chargement pour afficher un spinner
   const [loading, setLoading] = useState(true);
+  // Identifiant de l'utilisateur connecté
+  const [userId, setUserId] = useState<string | null>(null);
+  // Indique si la recette est dans les favoris
+  const [isFav, setIsFav] = useState(false);
   // Largeur de l'écran
   const { width } = useWindowDimensions();
   // Largeur de chaque carte d'ingrédient pour en afficher 3 par ligne
@@ -33,6 +39,15 @@ export default function RecipeDetailScreen() {
     getMealById(id).then((data) => {
       setMeal(data);
       setLoading(false);
+    });
+  }, [id]);
+
+  // Récupère l'utilisateur et vérifie si la recette est déjà en favori
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      if (!data.user) return;
+      setUserId(data.user.id);
+      isFavorite(data.user.id, id).then(setIsFav);
     });
   }, [id]);
 
@@ -80,7 +95,7 @@ export default function RecipeDetailScreen() {
         style={styles.container}
         contentContainerStyle={{ paddingBottom: 48 }}
       >
-        {/* Image et bouton retour en overlay */}
+        {/* Image avec bouton retour (gauche) et cœur favori (droite) en overlay */}
         <View>
           <Image
             source={{ uri: meal.strMealThumb }}
@@ -92,6 +107,29 @@ export default function RecipeDetailScreen() {
             onPress={() => router.back()}
           >
             <MaterialIcons name="arrow-back" size={22} color="#fff" />
+          </TouchableOpacity>
+          {/* Bouton de favoris : orange si la recette est dans les favoris, blanc sinon */}
+          <TouchableOpacity
+            style={styles.favBtn}
+            onPress={() => {
+              if (!userId) return;
+              toggleFavorite(
+                userId,
+                {
+                  idMeal: id,
+                  strMeal: meal.strMeal,
+                  strMealThumb: meal.strMealThumb,
+                },
+                isFav,
+              );
+              setIsFav(!isFav);
+            }}
+          >
+            <MaterialIcons
+              name={isFav ? "favorite" : "favorite-border"}
+              size={22}
+              color={isFav ? palette.accent : "#fff"}
+            />
           </TouchableOpacity>
         </View>
 
