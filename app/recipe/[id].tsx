@@ -20,6 +20,9 @@ export default function RecipeDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [meal, setMeal] = useState<MealDetail | null>(null);
   const [loading, setLoading] = useState(true);
+  const { width } = useWindowDimensions();
+  // 3 cartes par ligne
+  const cardWidth = Math.floor((width - spacing.xl * 2 - spacing.sm * 2) / 3);
 
   useEffect(() => {
     getMealById(id).then((data) => {
@@ -61,9 +64,6 @@ export default function RecipeDetailScreen() {
   }
 
   const ingredients = getMealIngredients(meal);
-  const { width } = useWindowDimensions();
-  // 3 cartes par ligne : largeur écran - padding body (×2) - 2 gaps entre cartes
-  const cardWidth = Math.floor((width - spacing.xl * 2 - spacing.sm * 2) / 3);
 
   return (
     <>
