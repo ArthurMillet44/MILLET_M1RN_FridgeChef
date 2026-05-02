@@ -17,13 +17,18 @@ import { getMealById, getMealIngredients, type MealDetail } from "@/lib/mealdb";
 import { styles } from "@/lib/styles/recipe-detail";
 
 export default function RecipeDetailScreen() {
+  // Identifiant de la recette transmis par la route (ex. /recipe/52772)
   const { id } = useLocalSearchParams<{ id: string }>();
+  // Données de la recette
   const [meal, setMeal] = useState<MealDetail | null>(null);
+  // Indique si les données sont en cours de chargement pour afficher un spinner
   const [loading, setLoading] = useState(true);
+  // Largeur de l'écran
   const { width } = useWindowDimensions();
-  // 3 cartes par ligne
+  // Largeur de chaque carte d'ingrédient pour en afficher 3 par ligne
   const cardWidth = Math.floor((width - spacing.xl * 2 - spacing.sm * 2) / 3);
 
+  // Charge la recette dès que l'id est connu (ou change)
   useEffect(() => {
     getMealById(id).then((data) => {
       setMeal(data);
@@ -31,6 +36,7 @@ export default function RecipeDetailScreen() {
     });
   }, [id]);
 
+  // Affiche un spinner pendant le chargement
   if (loading) {
     return (
       <>
@@ -47,6 +53,7 @@ export default function RecipeDetailScreen() {
     );
   }
 
+  // Affiche un message si la recette est introuvable
   if (!meal) {
     return (
       <>
@@ -63,6 +70,7 @@ export default function RecipeDetailScreen() {
     );
   }
 
+  // Récupère la liste des ingrédients et leur quantité
   const ingredients = getMealIngredients(meal);
 
   return (
