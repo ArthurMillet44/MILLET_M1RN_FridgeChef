@@ -3,7 +3,6 @@ import { Image } from "expo-image";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import {
-  ActivityIndicator,
   Linking,
   ScrollView,
   Text,
@@ -13,6 +12,7 @@ import {
 } from "react-native";
 
 import { Button } from "@/components/ui/Button";
+import { Spinner } from "@/components/ui/Spinner";
 
 import { palette, spacing } from "@/constants/design-system";
 import { isFavorite, toggleFavorite } from "@/lib/favorites";
@@ -79,13 +79,8 @@ export default function RecipeDetailScreen() {
     return (
       <>
         <Stack.Screen options={{ headerShown: false }} />
-        <View
-          style={[
-            styles.container,
-            { alignItems: "center", justifyContent: "center" },
-          ]}
-        >
-          <ActivityIndicator size="large" color={palette.accent} />
+        <View style={styles.container}>
+          <Spinner />
         </View>
       </>
     );

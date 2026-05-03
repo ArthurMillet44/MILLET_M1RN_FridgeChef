@@ -3,7 +3,6 @@ import { useKeepAwake } from "expo-keep-awake";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import {
-  ActivityIndicator,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -12,6 +11,7 @@ import {
 
 import { NavFooter } from "@/components/cook/NavFooter";
 import { ProgressHeader } from "@/components/cook/ProgressHeader";
+import { Spinner } from "@/components/ui/Spinner";
 import { palette } from "@/constants/design-system";
 import { getMealById, type MealDetail } from "@/lib/mealdb";
 import { styles } from "@/lib/styles/cook";
@@ -42,13 +42,8 @@ export default function CookScreen() {
     return (
       <>
         <Stack.Screen options={{ headerShown: false }} />
-        <View
-          style={[
-            styles.container,
-            { alignItems: "center", justifyContent: "center" },
-          ]}
-        >
-          <ActivityIndicator size="large" color={palette.accent} />
+        <View style={styles.container}>
+          <Spinner />
         </View>
       </>
     );

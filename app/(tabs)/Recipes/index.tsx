@@ -1,7 +1,6 @@
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useEffect, useMemo, useState } from "react";
 import {
-  ActivityIndicator,
   FlatList,
   RefreshControl,
   Text,
@@ -11,6 +10,7 @@ import {
 
 import { MealCard } from "@/components/recipes/Card";
 import { IngredientFilterModal } from "@/components/recipes/IngredientFilter";
+import { Spinner } from "@/components/ui/Spinner";
 import { palette } from "@/constants/design-system";
 import { getIngredients } from "@/lib/ingredients";
 import { searchByIngredient, type MealSummary } from "@/lib/mealdb";
@@ -147,9 +147,7 @@ export default function RecipesScreen() {
 
       {/* Contenu principal selon l'état */}
       {loading ? (
-        <View style={styles.emptyContainer}>
-          <ActivityIndicator size="large" color={palette.accent} />
-        </View>
+        <Spinner />
       ) : error ? (
         <View style={styles.emptyContainer}>
           <MaterialIcons name="wifi-off" size={48} color={palette.textSoft} />

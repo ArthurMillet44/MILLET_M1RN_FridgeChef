@@ -1,9 +1,10 @@
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback, useState } from "react";
-import { ActivityIndicator, FlatList, Text, View } from "react-native";
+import { FlatList, Text, View } from "react-native";
 
 import { MealCard } from "@/components/recipes/Card";
+import { Spinner } from "@/components/ui/Spinner";
 import { palette } from "@/constants/design-system";
 import { getFavorites } from "@/lib/favorites";
 import type { MealSummary } from "@/lib/mealdb";
@@ -48,9 +49,7 @@ export default function FavoritesScreen() {
 
       {/* Contenu avec réutilisation du composant Card de la page de recettes */}
       {loading ? (
-        <View style={styles.emptyContainer}>
-          <ActivityIndicator size="large" color={palette.accent} />
-        </View>
+        <Spinner />
       ) : (
         <FlatList
           data={meals}

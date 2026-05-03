@@ -2,13 +2,13 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback, useState } from "react";
 import {
-  ActivityIndicator,
   FlatList,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
 
+import { Spinner } from "@/components/ui/Spinner";
 import { palette } from "@/constants/design-system";
 import {
   clearCheckedItems,
@@ -107,9 +107,7 @@ export default function ShoppingScreen() {
 
       {/* Contenu -> spinner pendant le chargement, liste sinon */}
       {loading ? (
-        <View style={styles.emptyContainer}>
-          <ActivityIndicator size="large" color={palette.accent} />
-        </View>
+        <Spinner />
       ) : (
         <FlatList
           data={items}
