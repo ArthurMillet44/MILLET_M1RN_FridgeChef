@@ -10,6 +10,8 @@ import {
   View,
 } from "react-native";
 
+import { NavFooter } from "@/components/cook/NavFooter";
+import { ProgressHeader } from "@/components/cook/ProgressHeader";
 import { palette } from "@/constants/design-system";
 import { getMealById, type MealDetail } from "@/lib/mealdb";
 import { styles } from "@/lib/styles/cook";
@@ -80,9 +82,6 @@ export default function CookScreen() {
 
   // Nombre total d'étapes pour le compteur et la barre de progression
   const total = steps.length;
-  // Largeur de la barre de progression en pourcentage
-  const progressWidth: `${number}%` = `${((step + 1) / total) * 100}%`;
-
   // Indique si c'est la première ou la dernière étape pour désactiver les boutons de navigation
   const isFirst = step === 0;
   const isLast = step === total - 1;
@@ -97,15 +96,7 @@ export default function CookScreen() {
         </TouchableOpacity>
 
         {/* Compteur d'étapes et barre de progression */}
-        <View style={styles.header}>
-          <Text style={styles.counter}>
-            Étape {step + 1} / {total}
-          </Text>
-          <View style={styles.progressTrack}>
-            {/* La largeur augmente à chaque étape suivante */}
-            <View style={[styles.progressFill, { width: progressWidth }]} />
-          </View>
-        </View>
+        <ProgressHeader step={step} total={total} />
 
         {/* Texte de l'étape courante */}
         <ScrollView
@@ -116,39 +107,12 @@ export default function CookScreen() {
         </ScrollView>
 
         {/* Boutons de navigation précédent et suivant */}
-        <View style={styles.footer}>
-          <TouchableOpacity
-            style={[styles.navBtn, isFirst && styles.navBtnDisabled]}
-            onPress={() => setStep((s) => s - 1)}
-            disabled={isFirst}
-          >
-            <MaterialIcons
-              name="arrow-back"
-              size={18}
-              color={palette.textPrimary}
-            />
-            <Text style={styles.navBtnText}>Précédent</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[
-              styles.navBtn,
-              styles.navBtnPrimary,
-              isLast && styles.navBtnDisabled,
-            ]}
-            onPress={() => setStep((s) => s + 1)}
-            disabled={isLast}
-          >
-            <Text style={[styles.navBtnText, { color: palette.accentFg }]}>
-              Suivant
-            </Text>
-            <MaterialIcons
-              name="arrow-forward"
-              size={18}
-              color={palette.accentFg}
-            />
-          </TouchableOpacity>
-        </View>
+        <NavFooter
+          onPrev={() => setStep((s) => s - 1)}
+          onNext={() => setStep((s) => s + 1)}
+          isFirst={isFirst}
+          isLast={isLast}
+        />
       </View>
     </>
   );
