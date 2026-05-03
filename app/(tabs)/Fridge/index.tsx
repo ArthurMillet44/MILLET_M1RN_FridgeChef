@@ -28,6 +28,8 @@ export default function FridgeScreen() {
   const [search, setSearch] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [name, setName] = useState("");
+  // Quantité saisie dans la modale
+  const [quantity, setQuantity] = useState("");
   const [loading, setLoading] = useState(false);
   // Ingrédient en cours de modification
   const [editingIngredient, setEditingIngredient] = useState<Ingredient | null>(
@@ -55,10 +57,11 @@ export default function FridgeScreen() {
     : ingredients;
 
   /**
-   * Ouvre la modale d'ajout d'ingrédient et réinitialise le champ de saisie.
+   * Ouvre la modale d'ajout et réinitialise les champs nom et quantité.
    */
   function openModal() {
     setName("");
+    setQuantity("");
     setModalVisible(true);
   }
 
@@ -68,21 +71,23 @@ export default function FridgeScreen() {
   function closeModal() {
     setModalVisible(false);
     setName("");
+    setQuantity("");
     setEditingIngredient(null);
   }
 
   /**
-   * Ouvre la modale pré-remplie avec le nom de l'ingrédient sélectionné.
+   * Ouvre la modale pré-remplie avec le nom et la quantité de l'ingrédient sélectionné.
    * @param item L'ingrédient à modifier.
    */
   function openEditModal(item: Ingredient) {
     setEditingIngredient(item);
     setName(item.name);
+    setQuantity(item.quantity);
     setModalVisible(true);
   }
 
   /**
-   * Ajoute un nouvel ingrédient ou met à jour l'existant.
+   * Ajoute un nouvel ingrédient ou met à jour l'existant (nom + quantité).
    */
   async function handleSubmit() {
     // Ne fait rien si le nom est vide ou si l'utilisateur n'est pas identifié
@@ -90,16 +95,19 @@ export default function FridgeScreen() {
     setLoading(true);
     try {
       if (editingIngredient) {
-        // Met à jour le nom dans la base et dans la liste locale
-        await updateIngredient(editingIngredient.id, name);
+        // Met à jour le nom et la quantité dans la base et dans la liste locale
+        await updateIngredient(editingIngredient.id, name, quantity);
         setIngredients((prev) =>
+          // Met à jour l'ingrédient modifié dans la liste locale en fonction de son ID
           prev.map((i) =>
-            i.id === editingIngredient.id ? { ...i, name: name.trim() } : i,
+            i.id === editingIngredient.id
+              ? { ...i, name: name.trim(), quantity: quantity.trim() }
+              : i,
           ),
         );
       } else {
-        // Insère un nouvel ingrédient et l'ajoute à la liste
-        const ingredient = await addIngredient(userId, name);
+        // Insère un nouvel ingrédient avec sa quantité et l'ajoute à la liste locale
+        const ingredient = await addIngredient(userId, name, quantity);
         setIngredients((prev) => [...prev, ingredient]);
       }
       closeModal();
@@ -176,7 +184,13 @@ export default function FridgeScreen() {
                 color={palette.accent}
               />
             </View>
-            <Text style={styles.itemName}>{item.name}</Text>
+            {/* Bloc nom + quantité */}
+            <View style={styles.itemInfo}>
+              <Text style={styles.itemName}>{item.name}</Text>
+              {item.quantity ? (
+                <Text style={styles.itemQuantity}>{item.quantity}</Text>
+              ) : null}
+            </View>
             {/* Bouton de modification de l'ingrédient */}
             <TouchableOpacity
               onPress={() => openEditModal(item)}
@@ -234,6 +248,13 @@ export default function FridgeScreen() {
               onChangeText={setName}
               autoCapitalize="words"
               autoFocus
+            />
+            {/* Quantité */}
+            <Input
+              label="QUANTITÉ (optionnel)"
+              value={quantity}
+              onChangeText={setQuantity}
+              autoCapitalize="none"
             />
             {/* Le libellé du bouton change selon qu'on ajoute ou modifie */}
             <Button
