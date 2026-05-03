@@ -106,19 +106,6 @@ export const styles = StyleSheet.create({
     padding: spacing.xs,
   },
 
-  // État vide
-  emptyContainer: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: spacing.md,
-  },
-  emptyText: {
-    fontSize: typography.size.body,
-    color: palette.textMuted,
-    lineHeight: 20,
-  },
-
   // Bouton flottant
   fab: {
     position: "absolute",

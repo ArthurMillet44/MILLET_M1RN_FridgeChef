@@ -10,6 +10,7 @@ import {
 } from "react-native";
 
 import { Button } from "@/components/ui/Button";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { Input } from "@/components/ui/Input";
 import { palette } from "@/constants/design-system";
 import { useAuth } from "@/lib/auth-context";
@@ -159,15 +160,13 @@ export default function FridgeScreen() {
         keyExtractor={(item) => item.id}
         style={styles.list}
         contentContainerStyle={
-          filtered.length === 0 ? styles.emptyContainer : styles.listContent
+          filtered.length === 0 ? { flex: 1 } : styles.listContent
         }
         ListEmptyComponent={
-          <>
-            <MaterialIcons name="kitchen" size={48} color={palette.textSoft} />
-            <Text style={styles.emptyText}>
-              {search ? "Aucun résultat." : "Ton frigo est vide."}
-            </Text>
-          </>
+          <EmptyState
+            icon="kitchen"
+            message={search ? "Aucun résultat." : "Ton frigo est vide."}
+          />
         }
         renderItem={({ item }) => (
           <View style={styles.item}>

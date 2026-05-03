@@ -1,11 +1,10 @@
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback, useState } from "react";
 import { FlatList, Text, View } from "react-native";
 
 import { MealCard } from "@/components/recipes/Card";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { Spinner } from "@/components/ui/Spinner";
-import { palette } from "@/constants/design-system";
 import { useAuth } from "@/lib/auth-context";
 import { getFavorites } from "@/lib/favorites";
 import type { MealSummary } from "@/lib/mealdb";
@@ -50,16 +49,9 @@ export default function FavoritesScreen() {
           keyExtractor={(item) => item.idMeal}
           numColumns={2}
           columnWrapperStyle={{ gap: 8 }}
-          contentContainerStyle={styles.grid}
+          contentContainerStyle={meals.length === 0 ? { flex: 1 } : styles.grid}
           ListEmptyComponent={
-            <View style={styles.emptyContainer}>
-              <MaterialIcons
-                name="favorite-border"
-                size={48}
-                color={palette.textSoft}
-              />
-              <Text style={styles.emptyText}>Aucun favori pour l'instant.</Text>
-            </View>
+            <EmptyState icon="favorite-border" message="Aucun favori pour l'instant." />
           }
           renderItem={({ item }) => <MealCard meal={item} />}
         />

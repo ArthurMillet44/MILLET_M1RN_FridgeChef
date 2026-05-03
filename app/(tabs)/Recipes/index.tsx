@@ -10,6 +10,7 @@ import {
 
 import { MealCard } from "@/components/recipes/Card";
 import { IngredientFilterModal } from "@/components/recipes/IngredientFilter";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { Spinner } from "@/components/ui/Spinner";
 import { palette } from "@/constants/design-system";
 import { useAuth } from "@/lib/auth-context";
@@ -157,13 +158,10 @@ export default function RecipesScreen() {
           </TouchableOpacity>
         </View>
       ) : emptyFridge ? (
-        <View style={styles.emptyContainer}>
-          <MaterialIcons name="restaurant" size={48} color={palette.textSoft} />
-          <Text style={styles.emptyText}>
-            Ajoute des ingrédients à ton frigo pour voir des suggestions de
-            recettes.
-          </Text>
-        </View>
+        <EmptyState
+          icon="restaurant"
+          message="Ajoute des ingrédients à ton frigo pour voir des suggestions de recettes."
+        />
       ) : (
         // Grille 2 colonnes
         <FlatList
@@ -171,7 +169,7 @@ export default function RecipesScreen() {
           keyExtractor={(item) => item.idMeal}
           numColumns={2}
           columnWrapperStyle={{ gap: 8 }}
-          contentContainerStyle={styles.grid}
+          contentContainerStyle={filteredMeals.length === 0 ? { flex: 1 } : styles.grid}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
@@ -181,11 +179,7 @@ export default function RecipesScreen() {
             />
           }
           ListEmptyComponent={
-            <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>
-                Aucune recette pour cet ingrédient.
-              </Text>
-            </View>
+            <EmptyState icon="search-off" message="Aucune recette pour cet ingrédient." />
           }
           renderItem={({ item }) => <MealCard meal={item} />}
         />

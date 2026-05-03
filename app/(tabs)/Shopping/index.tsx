@@ -8,6 +8,7 @@ import {
   View,
 } from "react-native";
 
+import { EmptyState } from "@/components/ui/EmptyState";
 import { Spinner } from "@/components/ui/Spinner";
 import { palette } from "@/constants/design-system";
 import {
@@ -104,19 +105,10 @@ export default function ShoppingScreen() {
           keyExtractor={(item) => item.id}
           style={styles.list}
           contentContainerStyle={
-            items.length === 0 ? styles.emptyContainer : styles.listContent
+            items.length === 0 ? { flex: 1 } : styles.listContent
           }
           ListEmptyComponent={
-            <>
-              <MaterialIcons
-                name="shopping-cart"
-                size={48}
-                color={palette.textSoft}
-              />
-              <Text style={styles.emptyText}>
-                Ta liste de courses est vide.
-              </Text>
-            </>
+            <EmptyState icon="shopping-cart" message="Ta liste de courses est vide." />
           }
           renderItem={({ item }) => (
             <TouchableOpacity

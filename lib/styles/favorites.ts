@@ -29,17 +29,4 @@ export const styles = StyleSheet.create({
     paddingBottom: spacing.xl,
     gap: spacing.sm,
   },
-  emptyContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: spacing.xl,
-    gap: spacing.md,
-  },
-  emptyText: {
-    fontSize: typography.size.body,
-    color: palette.textMuted,
-    textAlign: 'center',
-    lineHeight: 22,
-  },
 });
