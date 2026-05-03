@@ -30,7 +30,7 @@ export function Button({
   const btnStyle = isPrimary
     ? { backgroundColor: colors.accent }
     : isYoutube
-      ? { backgroundColor: "#FF0000" }
+      ? { backgroundColor: colors.youtube }
       : [
           styles.btnGhost,
           { backgroundColor: colors.surface, borderColor: colors.border },

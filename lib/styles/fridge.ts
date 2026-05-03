@@ -64,7 +64,7 @@ export const styles = StyleSheet.create({
     ...common.cardShadow,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: palette.white,
     borderRadius: radius.lg,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
@@ -117,7 +117,7 @@ export const styles = StyleSheet.create({
   // Modale
   overlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.4)",
+    backgroundColor: palette.imageOverlay,
     justifyContent: "flex-end",
   },
   modalCard: {

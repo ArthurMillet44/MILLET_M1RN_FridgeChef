@@ -12,7 +12,7 @@ export const styles = StyleSheet.create({
   card: {
     ...common.cardShadow,
     width: CARD_WIDTH,
-    backgroundColor: "#fff",
+    backgroundColor: palette.white,
     borderRadius: radius.lg,
     overflow: "hidden",
   },

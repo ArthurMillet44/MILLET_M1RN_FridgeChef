@@ -39,7 +39,7 @@ export const styles = StyleSheet.create({
     ...common.cardShadow,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: palette.white,
     borderRadius: radius.lg,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,

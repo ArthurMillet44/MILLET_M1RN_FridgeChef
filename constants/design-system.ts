@@ -10,6 +10,9 @@ export const palette = {
   accent: "#D48800",
   accentFg: "#FFFFFF",
   error: "#D63030",
+  white: "#FFFFFF",
+  youtube: "#FF0000",
+  imageOverlay: "rgba(0,0,0,0.4)",
 } as const;
 
 export type Colors = typeof palette;
