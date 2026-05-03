@@ -3,6 +3,8 @@ import { supabase } from "./supabase";
 export type Ingredient = {
   id: string;
   name: string;
+  // Quantité ou vide si non renseignée
+  quantity: string;
   user_id: string;
   created_at: string;
 };
@@ -26,30 +28,37 @@ export async function getIngredients(userId: string): Promise<Ingredient[]> {
  * Ajoute un nouvel ingrédient à la base de données pour un utilisateur donné.
  * @param userId L'ID de l'utilisateur.
  * @param name Le nom de l'ingrédient.
+ * @param quantity La quantité (optionnelle, vide par défaut).
  * @returns L'ingrédient ajouté.
  */
 export async function addIngredient(
   userId: string,
   name: string,
+  quantity = "",
 ): Promise<Ingredient> {
   const { data, error } = await supabase
     .from("ingredients")
-    .insert({ user_id: userId, name: name.trim() })
-    .select() // Selectionne la ligne insérée pour la retourner
+    .insert({ user_id: userId, name: name.trim(), quantity: quantity.trim() })
+    .select() // Sélectionne la ligne insérée pour la retourner
     .single(); // S'assure de retourner un seul objet
   if (error) throw error;
   return data;
 }
 
 /**
- * Modifie le nom d'un ingrédient existant dans la base de données.
+ * Modifie le nom et la quantité d'un ingrédient existant dans la base de données.
  * @param id L'ID de l'ingrédient à modifier.
  * @param name Le nouveau nom de l'ingrédient.
+ * @param quantity La nouvelle quantité.
  */
-export async function updateIngredient(id: string, name: string): Promise<void> {
+export async function updateIngredient(
+  id: string,
+  name: string,
+  quantity = "",
+): Promise<void> {
   const { error } = await supabase
     .from("ingredients")
-    .update({ name: name.trim() })
+    .update({ name: name.trim(), quantity: quantity.trim() })
     .eq("id", id);
   if (error) throw error;
 }

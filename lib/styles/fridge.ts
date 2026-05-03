@@ -1,5 +1,10 @@
-import { palette, radius, spacing, typography } from '@/constants/design-system';
-import { StyleSheet } from 'react-native';
+import {
+  palette,
+  radius,
+  spacing,
+  typography,
+} from "@/constants/design-system";
+import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: {
@@ -14,8 +19,8 @@ export const styles = StyleSheet.create({
     paddingBottom: spacing.sm,
   },
   searchBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: palette.surface,
     borderRadius: radius.full,
     borderWidth: 1,
@@ -32,9 +37,9 @@ export const styles = StyleSheet.create({
 
   // En-tête de section
   sectionRow: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "baseline",
+    justifyContent: "space-between",
     paddingHorizontal: spacing.xl,
     paddingTop: spacing.md,
     paddingBottom: spacing.sm,
@@ -62,14 +67,14 @@ export const styles = StyleSheet.create({
 
   // Item carte
   item: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#fff",
     borderRadius: radius.lg,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
     gap: spacing.md,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.06,
     shadowRadius: 4,
@@ -80,14 +85,22 @@ export const styles = StyleSheet.create({
     height: 44,
     borderRadius: radius.md,
     backgroundColor: palette.surface,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   itemName: {
-    flex: 1,
     fontSize: typography.size.bodyLg,
     fontWeight: typography.weight.semibold,
     color: palette.textPrimary,
+  },
+  // Bloc texte (nom + quantité)
+  itemInfo: {
+    flex: 1,
+    gap: 2,
+  },
+  itemQuantity: {
+    fontSize: typography.size.small,
+    color: palette.textMuted,
   },
   deleteBtn: {
     padding: spacing.xs,
@@ -96,8 +109,8 @@ export const styles = StyleSheet.create({
   // État vide
   emptyContainer: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     gap: spacing.md,
   },
   emptyText: {
@@ -108,15 +121,15 @@ export const styles = StyleSheet.create({
 
   // Bouton flottant
   fab: {
-    position: 'absolute',
+    position: "absolute",
     bottom: spacing.xl,
     right: spacing.xl,
     width: 56,
     height: 56,
     borderRadius: 28,
     backgroundColor: palette.accent,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     shadowColor: palette.accent,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,
@@ -127,8 +140,8 @@ export const styles = StyleSheet.create({
   // Modale
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    justifyContent: 'flex-end',
+    backgroundColor: "rgba(0,0,0,0.4)",
+    justifyContent: "flex-end",
   },
   modalCard: {
     backgroundColor: palette.bg,
@@ -140,8 +153,8 @@ export const styles = StyleSheet.create({
     gap: spacing.lg,
   },
   modalTopRow: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+    flexDirection: "row",
+    justifyContent: "flex-end",
   },
   closeBtn: {
     padding: spacing.xs,
