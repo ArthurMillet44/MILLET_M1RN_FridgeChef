@@ -16,8 +16,8 @@ import {
   toggleShoppingItem,
   type ShoppingItem,
 } from "@/lib/shopping";
+import { useAuth } from "@/lib/auth-context";
 import { styles } from "@/lib/styles/shopping";
-import { supabase } from "@/lib/supabase";
 
 /**
  * Trie les articles de la liste de courses en mettant les cochés à la fin, puis par ordre de création.
@@ -29,10 +29,9 @@ function sortItems(items: ShoppingItem[]): ShoppingItem[] {
 }
 
 export default function ShoppingScreen() {
+  const { userId } = useAuth();
   // Liste des articles de la liste de courses
   const [items, setItems] = useState<ShoppingItem[]>([]);
-  // ID de l'utilisateur connecté
-  const [userId, setUserId] = useState<string | null>(null);
   // Indique si la liste est en cours de chargement
   const [loading, setLoading] = useState(true);
 
@@ -40,19 +39,11 @@ export default function ShoppingScreen() {
   useFocusEffect(
     useCallback(() => {
       setLoading(true);
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        if (!session) {
-          setLoading(false);
-          return;
-        }
-        setUserId(session.user.id);
-        // getShoppingItems peut échouer si hors ligne, on affiche juste une liste vide
-        getShoppingItems(session.user.id)
-          .then((data) => setItems(sortItems(data)))
-          .catch(() => {})
-          .finally(() => setLoading(false));
-      });
-    }, []),
+      getShoppingItems(userId)
+        .then((data) => setItems(sortItems(data)))
+        .catch(() => {})
+        .finally(() => setLoading(false));
+    }, [userId]),
   );
 
   /**
@@ -75,7 +66,6 @@ export default function ShoppingScreen() {
    * Supprime tous les articles cochés de la liste et de la base.
    */
   async function handleClear() {
-    if (!userId) return;
     setItems((prev) => prev.filter((i) => !i.checked));
     await clearCheckedItems(userId);
   }

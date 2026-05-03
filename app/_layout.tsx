@@ -4,6 +4,7 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import "react-native-reanimated";
 
+import { AuthProvider } from "@/lib/auth-context";
 import { supabase } from "@/lib/supabase";
 import { AppThemeProvider } from "@/lib/theme";
 import SignInScreen from "./SignIn";
@@ -36,14 +37,16 @@ export default function RootLayout() {
     <AppThemeProvider>
       <ThemeProvider value={DefaultTheme}>
         {userId ? (
-          // Utilisateur connecté → accès à l'application
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen
-              name="modal"
-              options={{ presentation: "modal", title: "Modal" }}
-            />
-          </Stack>
+          // Utilisateur connecté → userId garanti non-null, exposé via AuthProvider
+          <AuthProvider userId={userId}>
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="modal"
+                options={{ presentation: "modal", title: "Modal" }}
+              />
+            </Stack>
+          </AuthProvider>
         ) : (
           // Utilisateur non connecté → écran de connexion/inscription
           <SignInScreen />

@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { palette } from "@/constants/design-system";
+import { useAuth } from "@/lib/auth-context";
 import {
   addIngredient,
   deleteIngredient,
@@ -20,11 +21,10 @@ import {
   type Ingredient,
 } from "@/lib/ingredients";
 import { styles } from "@/lib/styles/fridge";
-import { supabase } from "@/lib/supabase";
 
 export default function FridgeScreen() {
+  const { userId } = useAuth();
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
-  const [userId, setUserId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [name, setName] = useState("");
@@ -36,18 +36,12 @@ export default function FridgeScreen() {
     null,
   );
 
-  // Récupère les ingrédients de l'utilisateur
+  // Charge les ingrédients au montage (userId garanti non-null via AuthContext)
   useEffect(() => {
-    // Récupère la session de l'utilisateur connecté via getSession, aucun réseau requis (session déjà mise en cache dans AsyncStorage)
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) return;
-      setUserId(session.user.id);
-      // getIngredients peut échouer si hors ligne, on affiche juste une liste vide
-      getIngredients(session.user.id)
-        .then(setIngredients)
-        .catch(() => {});
-    });
-  }, []);
+    getIngredients(userId)
+      .then(setIngredients)
+      .catch(() => {});
+  }, [userId]);
 
   // Filtre les ingrédients en fonction de la recherche
   const filtered = search.trim()

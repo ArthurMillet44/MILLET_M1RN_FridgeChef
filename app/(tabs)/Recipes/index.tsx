@@ -12,12 +12,13 @@ import { MealCard } from "@/components/recipes/Card";
 import { IngredientFilterModal } from "@/components/recipes/IngredientFilter";
 import { Spinner } from "@/components/ui/Spinner";
 import { palette } from "@/constants/design-system";
+import { useAuth } from "@/lib/auth-context";
 import { getIngredients } from "@/lib/ingredients";
 import { searchByIngredient, type MealSummary } from "@/lib/mealdb";
 import { styles } from "@/lib/styles/recipes";
-import { supabase } from "@/lib/supabase";
 
 export default function RecipesScreen() {
+  const { userId } = useAuth();
   const [allMeals, setAllMeals] = useState<MealSummary[]>([]);
   // Pour chaque recette, quels ingrédients du frigo permettent de la trouver
   const [mealIngredients, setMealIngredients] = useState<
@@ -51,12 +52,8 @@ export default function RecipesScreen() {
     // remet le filtre à zéro
     setSelectedIngredient(null);
     try {
-      // Récupère la session de l'utilisateur connecté via getSession, aucun réseau requis (session déjà mise en cache dans AsyncStorage)
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) return;
-
       // Récupère ce qu'il y a dans le frigo
-      const ingredients = await getIngredients(session.user.id);
+      const ingredients = await getIngredients(userId);
       if (ingredients.length === 0) {
         // montre le message "frigo vide"
         setEmptyFridge(true);

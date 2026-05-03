@@ -15,22 +15,21 @@ import { Button } from "@/components/ui/Button";
 import { Spinner } from "@/components/ui/Spinner";
 
 import { palette, spacing } from "@/constants/design-system";
+import { useAuth } from "@/lib/auth-context";
 import { isFavorite, toggleFavorite } from "@/lib/favorites";
 import { getIngredients } from "@/lib/ingredients";
 import { getMealById, getMealIngredients, type MealDetail } from "@/lib/mealdb";
 import { addShoppingItems, getShoppingItems } from "@/lib/shopping";
 import { styles } from "@/lib/styles/recipe-detail";
-import { supabase } from "@/lib/supabase";
 
 export default function RecipeDetailScreen() {
+  const { userId } = useAuth();
   // Identifiant de la recette transmis par la route (ex. /recipe/52772)
   const { id } = useLocalSearchParams<{ id: string }>();
   // Données de la recette
   const [meal, setMeal] = useState<MealDetail | null>(null);
   // Indique si les données sont en cours de chargement pour afficher un spinner
   const [loading, setLoading] = useState(true);
-  // Identifiant de l'utilisateur connecté
-  const [userId, setUserId] = useState<string | null>(null);
   // Indique si la recette est dans les favoris
   const [isFav, setIsFav] = useState(false);
   // Noms des ingrédients du frigo pour le filtre "Générer ma liste"
@@ -52,27 +51,16 @@ export default function RecipeDetailScreen() {
     });
   }, [id]);
 
-  // Récupère l'utilisateur, vérifie les favoris, et charge le frigo + la liste de courses
+  // Vérifie les favoris et charge le frigo + la liste de courses pour le bouton "Générer ma liste"
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) return;
-      setUserId(session.user.id);
-      isFavorite(session.user.id, id).then(setIsFav);
-      // Charge en parallèle le frigo et la liste de courses pour le bouton "Générer ma liste"
-      Promise.all([
-        // Récupère les ingrédients du frigo pour le filtre "Générer ma liste"
-        getIngredients(session.user.id),
-        // Récupère les articles de la liste de courses pour éviter les doublons
-        getShoppingItems(session.user.id),
-      ])
-        // Met à jour les sets locaux avec les noms des ingrédients
-        .then(([fridge, shopping]) => {
-          setFridgeNames(fridge.map((i) => i.name.toLowerCase()));
-          setShoppingNames(shopping.map((i) => i.name.toLowerCase()));
-        })
-        .catch(() => {});
-    });
-  }, [id]);
+    isFavorite(userId, id).then(setIsFav);
+    Promise.all([getIngredients(userId), getShoppingItems(userId)])
+      .then(([fridge, shopping]) => {
+        setFridgeNames(fridge.map((i) => i.name.toLowerCase()));
+        setShoppingNames(shopping.map((i) => i.name.toLowerCase()));
+      })
+      .catch(() => {});
+  }, [id, userId]);
 
   // Affiche un spinner pendant le chargement
   if (loading) {
@@ -111,7 +99,6 @@ export default function RecipeDetailScreen() {
    * et pas encore dans la liste.
    */
   async function handleGenerateList() {
-    if (!userId) return;
     // Affiche un état de chargement sur le bouton
     setAddingToList(true);
     try {
@@ -159,7 +146,6 @@ export default function RecipeDetailScreen() {
           <TouchableOpacity
             style={styles.favBtn}
             onPress={() => {
-              if (!userId) return;
               toggleFavorite(
                 userId,
                 {

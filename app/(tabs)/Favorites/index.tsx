@@ -6,12 +6,13 @@ import { FlatList, Text, View } from "react-native";
 import { MealCard } from "@/components/recipes/Card";
 import { Spinner } from "@/components/ui/Spinner";
 import { palette } from "@/constants/design-system";
+import { useAuth } from "@/lib/auth-context";
 import { getFavorites } from "@/lib/favorites";
 import type { MealSummary } from "@/lib/mealdb";
 import { styles } from "@/lib/styles/favorites";
-import { supabase } from "@/lib/supabase";
 
 export default function FavoritesScreen() {
+  const { userId } = useAuth();
   // Recettes favorites de l'utilisateur
   const [meals, setMeals] = useState<MealSummary[]>([]);
   // Vrai pendant le chargement initial des favoris ou lors du rafraîchissement de la liste
@@ -21,18 +22,11 @@ export default function FavoritesScreen() {
   useFocusEffect(
     useCallback(() => {
       setLoading(true);
-      // Récupère les favoris de l'utilisateur connecté depuis getSession, aucun réseau requis (si la session est déjà chargée via AsyncStorage)
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        if (!session) {
-          setLoading(false);
-          return;
-        }
-        getFavorites(session.user.id).then((favs) => {
-          setMeals(favs);
-          setLoading(false);
-        });
+      getFavorites(userId).then((favs) => {
+        setMeals(favs);
+        setLoading(false);
       });
-    }, []),
+    }, [userId]),
   );
 
   return (
