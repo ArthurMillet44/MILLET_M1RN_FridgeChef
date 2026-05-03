@@ -1,14 +1,13 @@
-import { palette, spacing } from '@/constants/design-system';
-import { StyleSheet } from 'react-native';
+import { palette, spacing } from "@/constants/design-system";
+import { StyleSheet } from "react-native";
+
+import { common } from "./common";
 
 export const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: palette.bg,
-  },
+  container: common.container,
   // Bouton ✕ en overlay haut gauche
   closeBtn: {
-    position: 'absolute',
+    position: "absolute",
     top: 48,
     left: spacing.lg,
     zIndex: 10,
@@ -16,8 +15,8 @@ export const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     backgroundColor: palette.surface,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   // Zone scrollable contenant le texte de l'étape
   content: {
@@ -25,7 +24,7 @@ export const styles = StyleSheet.create({
   },
   contentInner: {
     flexGrow: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
     padding: spacing.xl,
   },
   stepText: {

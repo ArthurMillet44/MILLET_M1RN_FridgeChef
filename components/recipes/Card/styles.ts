@@ -1,10 +1,7 @@
-import {
-  palette,
-  radius,
-  spacing,
-  typography,
-} from "@/constants/design-system";
+import { palette, radius, spacing, typography } from "@/constants/design-system";
 import { Dimensions, StyleSheet } from "react-native";
+
+import { common } from "@/lib/styles/common";
 
 const CARD_GAP = spacing.sm;
 // Calcul de la largeur des cartes pour en afficher 2 par ligne avec un gap de 8px et des marges de 16px de chaque côté.
@@ -13,15 +10,11 @@ export const CARD_WIDTH =
 
 export const styles = StyleSheet.create({
   card: {
+    ...common.cardShadow,
     width: CARD_WIDTH,
     backgroundColor: "#fff",
     borderRadius: radius.lg,
     overflow: "hidden",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06,
-    shadowRadius: 4,
-    elevation: 2,
   },
   cardImage: {
     width: "100%",

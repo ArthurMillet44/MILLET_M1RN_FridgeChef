@@ -1,16 +1,10 @@
-import {
-  palette,
-  radius,
-  spacing,
-  typography,
-} from "@/constants/design-system";
+import { palette, radius, spacing, typography } from "@/constants/design-system";
 import { StyleSheet } from "react-native";
 
+import { common } from "./common";
+
 export const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: palette.bg,
-  },
+  container: common.container,
 
   // Barre de recherche
   searchRow: {
@@ -67,6 +61,7 @@ export const styles = StyleSheet.create({
 
   // Item carte
   item: {
+    ...common.cardShadow,
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#fff",
@@ -74,11 +69,6 @@ export const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
     gap: spacing.md,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06,
-    shadowRadius: 4,
-    elevation: 2,
   },
   iconPlaceholder: {
     width: 44,

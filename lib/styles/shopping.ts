@@ -1,11 +1,10 @@
 import { palette, radius, spacing, typography } from "@/constants/design-system";
 import { StyleSheet } from "react-native";
 
+import { common } from "./common";
+
 export const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: palette.bg,
-  },
+  container: common.container,
 
   // En-tête : titre + bouton "Effacer les cochés"
   header: {
@@ -16,19 +15,8 @@ export const styles = StyleSheet.create({
     paddingTop: spacing.lg,
     paddingBottom: spacing.md,
   },
-  title: {
-    fontSize: typography.size.title,
-    fontWeight: typography.weight.black,
-    letterSpacing: typography.tracking.widest,
-    color: palette.accent,
-    lineHeight: 38,
-  },
-  subtitle: {
-    fontSize: typography.size.body,
-    color: palette.textMuted,
-    marginTop: spacing.sm,
-    lineHeight: 20,
-  },
+  title: common.screenTitle,
+  subtitle: common.screenSubtitle,
   // Bouton "Effacer les cochés" affiché uniquement si des items sont cochés
   clearBtn: {
     fontSize: typography.size.body,
@@ -48,6 +36,7 @@ export const styles = StyleSheet.create({
 
   // Item de la liste
   item: {
+    ...common.cardShadow,
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#fff",
@@ -55,11 +44,6 @@ export const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
     gap: spacing.md,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06,
-    shadowRadius: 4,
-    elevation: 2,
   },
   // Item coché : légèrement transparent
   itemChecked: {
@@ -84,5 +68,4 @@ export const styles = StyleSheet.create({
     fontSize: typography.size.small,
     color: palette.textMuted,
   },
-
 });

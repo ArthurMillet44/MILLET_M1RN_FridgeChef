@@ -1,16 +1,10 @@
-import {
-  palette,
-  radius,
-  spacing,
-  typography,
-} from "@/constants/design-system";
+import { palette, radius, spacing, typography } from "@/constants/design-system";
 import { StyleSheet } from "react-native";
 
+import { common } from "./common";
+
 export const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: palette.bg,
-  },
+  container: common.container,
   image: {
     width: "100%",
     height: 300,
