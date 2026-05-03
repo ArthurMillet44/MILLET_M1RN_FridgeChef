@@ -79,6 +79,20 @@ export const styles = StyleSheet.create({
     color: palette.textPrimary,
     lineHeight: 22,
   },
+  cookBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.sm,
+    backgroundColor: palette.accent,
+    borderRadius: radius.lg,
+    paddingVertical: spacing.md,
+  },
+  cookBtnText: {
+    color: palette.accentFg,
+    fontSize: typography.size.body,
+    fontWeight: typography.weight.semibold,
+  },
   youtubeBtn: {
     flexDirection: 'row',
     alignItems: 'center',
