@@ -44,10 +44,11 @@ export default function RecipeDetailScreen() {
 
   // Récupère l'utilisateur et vérifie si la recette est déjà en favori
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      if (!data.user) return;
-      setUserId(data.user.id);
-      isFavorite(data.user.id, id).then(setIsFav);
+    // Récupère la session de l'utilisateur connecté via getSession, aucun réseau requis (session déjà mise en cache dans AsyncStorage)
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) return;
+      setUserId(session.user.id);
+      isFavorite(session.user.id, id).then(setIsFav);
     });
   }, [id]);
 
