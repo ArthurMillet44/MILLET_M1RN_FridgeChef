@@ -20,10 +20,13 @@ export default function FavoritesScreen() {
   useFocusEffect(
     useCallback(() => {
       setLoading(true);
-      // Récupère l'utilisateur connecté pour ensuite charger ses favoris
-      supabase.auth.getUser().then(({ data }) => {
-        if (!data.user) return;
-        getFavorites(data.user.id).then((favs) => {
+      // Récupère les favoris de l'utilisateur connecté depuis getSession, aucun réseau requis (si la session est déjà chargée via AsyncStorage)
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (!session) {
+          setLoading(false);
+          return;
+        }
+        getFavorites(session.user.id).then((favs) => {
           setMeals(favs);
           setLoading(false);
         });

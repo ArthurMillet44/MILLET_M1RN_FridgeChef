@@ -36,11 +36,14 @@ export default function FridgeScreen() {
 
   // Récupère les ingrédients de l'utilisateur
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      if (data.user) {
-        setUserId(data.user.id);
-        getIngredients(data.user.id).then(setIngredients);
-      }
+    // Récupère la session de l'utilisateur connecté via getSession, aucun réseau requis (session déjà mise en cache dans AsyncStorage)
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) return;
+      setUserId(session.user.id);
+      // getIngredients peut échouer si hors ligne, on affiche juste une liste vide
+      getIngredients(session.user.id)
+        .then(setIngredients)
+        .catch(() => {});
     });
   }, []);
 

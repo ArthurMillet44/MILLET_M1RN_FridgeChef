@@ -51,12 +51,12 @@ export default function RecipesScreen() {
     // remet le filtre à zéro
     setSelectedIngredient(null);
     try {
-      // Vérifie que l'utilisateur est bien connecté
-      const { data } = await supabase.auth.getUser();
-      if (!data.user) return;
+      // Récupère la session de l'utilisateur connecté via getSession, aucun réseau requis (session déjà mise en cache dans AsyncStorage)
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
 
       // Récupère ce qu'il y a dans le frigo
-      const ingredients = await getIngredients(data.user.id);
+      const ingredients = await getIngredients(session.user.id);
       if (ingredients.length === 0) {
         // montre le message "frigo vide"
         setEmptyFridge(true);
