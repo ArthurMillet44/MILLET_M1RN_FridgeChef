@@ -11,7 +11,11 @@ export const styles = StyleSheet.create({
   btnGhost: {
     borderWidth: 1,
   },
-
+  row: {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    gap: 8,
+  },
   text: {
     fontSize: typography.size.small,
   },

@@ -1,5 +1,10 @@
-import { palette, radius, spacing, typography } from '@/constants/design-system';
-import { StyleSheet } from 'react-native';
+import {
+  palette,
+  radius,
+  spacing,
+  typography,
+} from "@/constants/design-system";
+import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: {
@@ -7,30 +12,30 @@ export const styles = StyleSheet.create({
     backgroundColor: palette.bg,
   },
   image: {
-    width: '100%',
+    width: "100%",
     height: 300,
   },
   backBtn: {
-    position: 'absolute',
+    position: "absolute",
     top: 48,
     left: spacing.lg,
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "rgba(0,0,0,0.4)",
+    alignItems: "center",
+    justifyContent: "center",
   },
   favBtn: {
-    position: 'absolute',
+    position: "absolute",
     top: 48,
     right: spacing.lg,
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "rgba(0,0,0,0.4)",
+    alignItems: "center",
+    justifyContent: "center",
   },
   body: {
     padding: spacing.xl,
@@ -54,8 +59,8 @@ export const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   ingredientGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: spacing.sm,
   },
   ingredientCard: {
@@ -78,47 +83,5 @@ export const styles = StyleSheet.create({
     fontSize: typography.size.body,
     color: palette.textPrimary,
     lineHeight: 22,
-  },
-  cookBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: spacing.sm,
-    backgroundColor: palette.accent,
-    borderRadius: radius.lg,
-    paddingVertical: spacing.md,
-  },
-  cookBtnText: {
-    color: palette.accentFg,
-    fontSize: typography.size.body,
-    fontWeight: typography.weight.semibold,
-  },
-  shoppingBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: spacing.sm,
-    backgroundColor: palette.surface,
-    borderRadius: radius.lg,
-    paddingVertical: spacing.md,
-  },
-  shoppingBtnText: {
-    color: palette.textPrimary,
-    fontSize: typography.size.body,
-    fontWeight: typography.weight.semibold,
-  },
-  youtubeBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: spacing.sm,
-    backgroundColor: '#FF0000',
-    borderRadius: radius.lg,
-    paddingVertical: spacing.md,
-  },
-  youtubeBtnText: {
-    color: '#fff',
-    fontSize: typography.size.body,
-    fontWeight: typography.weight.semibold,
   },
 });

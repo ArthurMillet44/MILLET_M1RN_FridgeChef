@@ -12,6 +12,8 @@ import {
   View,
 } from "react-native";
 
+import { Button } from "@/components/ui/Button";
+
 import { palette, spacing } from "@/constants/design-system";
 import { isFavorite, toggleFavorite } from "@/lib/favorites";
 import { getIngredients } from "@/lib/ingredients";
@@ -214,46 +216,32 @@ export default function RecipeDetailScreen() {
             <Text style={styles.instructions}>{meal.strInstructions}</Text>
           </View>
 
-          {/* Bouton Mode Cuisine : lance l'affichage étape par étape */}
-          <TouchableOpacity
-            style={styles.cookBtn}
+          {/* Bouton Mode Cuisine qui lance le mode cuisine */}
+          <Button
+            label="Mode Cuisine"
+            icon="restaurant"
             onPress={() =>
               router.push({ pathname: "/cook/[id]", params: { id } })
             }
-          >
-            <MaterialIcons
-              name="restaurant"
-              size={20}
-              color={palette.accentFg}
-            />
-            <Text style={styles.cookBtnText}>Mode Cuisine</Text>
-          </TouchableOpacity>
+          />
 
           {/* Bouton "Générer ma liste" qui ajoute les ingrédients manquants à la liste de courses */}
-          <TouchableOpacity
-            style={styles.shoppingBtn}
+          <Button
+            label={addingToList ? "Ajout en cours..." : "Générer ma liste"}
+            icon="shopping-cart"
+            variant="ghost"
             onPress={handleGenerateList}
-            disabled={addingToList}
-          >
-            <MaterialIcons
-              name="shopping-cart"
-              size={20}
-              color={palette.textPrimary}
-            />
-            <Text style={styles.shoppingBtnText}>
-              {addingToList ? "Ajout en cours..." : "Générer ma liste"}
-            </Text>
-          </TouchableOpacity>
+            loading={addingToList}
+          />
 
           {/* Bouton YouTube si disponible */}
           {meal.strYoutube ? (
-            <TouchableOpacity
-              style={styles.youtubeBtn}
+            <Button
+              label="Voir sur YouTube"
+              icon="play-circle-filled"
+              variant="youtube"
               onPress={() => Linking.openURL(meal.strYoutube)}
-            >
-              <MaterialIcons name="play-circle-filled" size={20} color="#fff" />
-              <Text style={styles.youtubeBtnText}>Voir sur YouTube</Text>
-            </TouchableOpacity>
+            />
           ) : null}
         </View>
       </ScrollView>
