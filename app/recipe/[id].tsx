@@ -165,6 +165,15 @@ export default function RecipeDetailScreen() {
             <Text style={styles.instructions}>{meal.strInstructions}</Text>
           </View>
 
+          {/* Bouton Mode Cuisine : lance l'affichage étape par étape */}
+          <TouchableOpacity
+            style={styles.cookBtn}
+            onPress={() => router.push({ pathname: '/cook/[id]', params: { id } })}
+          >
+            <MaterialIcons name="restaurant" size={20} color={palette.accentFg} />
+            <Text style={styles.cookBtnText}>Mode Cuisine</Text>
+          </TouchableOpacity>
+
           {/* Bouton YouTube si disponible */}
           {meal.strYoutube ? (
             <TouchableOpacity
