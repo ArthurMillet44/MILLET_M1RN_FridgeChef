@@ -93,6 +93,20 @@ export const styles = StyleSheet.create({
     fontSize: typography.size.body,
     fontWeight: typography.weight.semibold,
   },
+  shoppingBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.sm,
+    backgroundColor: palette.surface,
+    borderRadius: radius.lg,
+    paddingVertical: spacing.md,
+  },
+  shoppingBtnText: {
+    color: palette.textPrimary,
+    fontSize: typography.size.body,
+    fontWeight: typography.weight.semibold,
+  },
   youtubeBtn: {
     flexDirection: 'row',
     alignItems: 'center',

@@ -14,7 +14,9 @@ import {
 
 import { palette, spacing } from "@/constants/design-system";
 import { isFavorite, toggleFavorite } from "@/lib/favorites";
+import { getIngredients } from "@/lib/ingredients";
 import { getMealById, getMealIngredients, type MealDetail } from "@/lib/mealdb";
+import { addShoppingItems, getShoppingItems } from "@/lib/shopping";
 import { styles } from "@/lib/styles/recipe-detail";
 import { supabase } from "@/lib/supabase";
 
@@ -29,6 +31,12 @@ export default function RecipeDetailScreen() {
   const [userId, setUserId] = useState<string | null>(null);
   // Indique si la recette est dans les favoris
   const [isFav, setIsFav] = useState(false);
+  // Noms des ingrédients du frigo pour le filtre "Générer ma liste"
+  const [fridgeNames, setFridgeNames] = useState<string[]>([]);
+  // Noms des articles déjà dans la liste de courses pour éviter les doublons
+  const [shoppingNames, setShoppingNames] = useState<string[]>([]);
+  // Indique si l'ajout à la liste de courses est en cours
+  const [addingToList, setAddingToList] = useState(false);
   // Largeur de l'écran
   const { width } = useWindowDimensions();
   // Largeur de chaque carte d'ingrédient pour en afficher 3 par ligne
@@ -42,13 +50,25 @@ export default function RecipeDetailScreen() {
     });
   }, [id]);
 
-  // Récupère l'utilisateur et vérifie si la recette est déjà en favori
+  // Récupère l'utilisateur, vérifie les favoris, et charge le frigo + la liste de courses
   useEffect(() => {
-    // Récupère la session de l'utilisateur connecté via getSession, aucun réseau requis (session déjà mise en cache dans AsyncStorage)
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) return;
       setUserId(session.user.id);
       isFavorite(session.user.id, id).then(setIsFav);
+      // Charge en parallèle le frigo et la liste de courses pour le bouton "Générer ma liste"
+      Promise.all([
+        // Récupère les ingrédients du frigo pour le filtre "Générer ma liste"
+        getIngredients(session.user.id),
+        // Récupère les articles de la liste de courses pour éviter les doublons
+        getShoppingItems(session.user.id),
+      ])
+        // Met à jour les sets locaux avec les noms des ingrédients
+        .then(([fridge, shopping]) => {
+          setFridgeNames(fridge.map((i) => i.name.toLowerCase()));
+          setShoppingNames(shopping.map((i) => i.name.toLowerCase()));
+        })
+        .catch(() => {});
     });
   }, [id]);
 
@@ -88,6 +108,35 @@ export default function RecipeDetailScreen() {
 
   // Récupère la liste des ingrédients et leur quantité
   const ingredients = getMealIngredients(meal);
+
+  /**
+   * Ajoute à la liste de courses les ingrédients de la recette absents du frigo
+   * et pas encore dans la liste.
+   */
+  async function handleGenerateList() {
+    if (!userId) return;
+    // Affiche un état de chargement sur le bouton
+    setAddingToList(true);
+    try {
+      const fridgeSet = new Set(fridgeNames);
+      const shoppingSet = new Set(shoppingNames);
+      const toAdd = ingredients
+        .filter(
+          ({ name }) =>
+            !fridgeSet.has(name.toLowerCase()) &&
+            !shoppingSet.has(name.toLowerCase()),
+        )
+        .map(({ name, measure }) => ({ name, quantity: measure }));
+      await addShoppingItems(userId, toAdd);
+      // Met à jour le set local pour éviter les doublons si on rappuie
+      setShoppingNames((prev) => [
+        ...prev,
+        ...toAdd.map((i) => i.name.toLowerCase()),
+      ]);
+    } finally {
+      setAddingToList(false);
+    }
+  }
 
   return (
     <>
@@ -168,10 +217,32 @@ export default function RecipeDetailScreen() {
           {/* Bouton Mode Cuisine : lance l'affichage étape par étape */}
           <TouchableOpacity
             style={styles.cookBtn}
-            onPress={() => router.push({ pathname: '/cook/[id]', params: { id } })}
+            onPress={() =>
+              router.push({ pathname: "/cook/[id]", params: { id } })
+            }
           >
-            <MaterialIcons name="restaurant" size={20} color={palette.accentFg} />
+            <MaterialIcons
+              name="restaurant"
+              size={20}
+              color={palette.accentFg}
+            />
             <Text style={styles.cookBtnText}>Mode Cuisine</Text>
+          </TouchableOpacity>
+
+          {/* Bouton "Générer ma liste" qui ajoute les ingrédients manquants à la liste de courses */}
+          <TouchableOpacity
+            style={styles.shoppingBtn}
+            onPress={handleGenerateList}
+            disabled={addingToList}
+          >
+            <MaterialIcons
+              name="shopping-cart"
+              size={20}
+              color={palette.textPrimary}
+            />
+            <Text style={styles.shoppingBtnText}>
+              {addingToList ? "Ajout en cours..." : "Générer ma liste"}
+            </Text>
           </TouchableOpacity>
 
           {/* Bouton YouTube si disponible */}
