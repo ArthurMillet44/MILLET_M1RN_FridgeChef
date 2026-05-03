@@ -21,8 +21,7 @@ export async function getShoppingItems(
     .from("shopping_items")
     .select("*")
     .eq("user_id", userId)
-    .order("checked", { ascending: true })
-    .order("created_at", { ascending: true });
+    .order("checked", { ascending: true });
   if (error) throw error;
   return data ?? [];
 }
