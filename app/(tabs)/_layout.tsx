@@ -69,6 +69,15 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="Shopping/index"
+        options={{
+          title: "Courses",
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={28} name="cart" color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }

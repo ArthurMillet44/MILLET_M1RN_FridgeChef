@@ -17,6 +17,7 @@ const MAPPING = {
   refrigerator: "kitchen",
   recipes: "restaurant",
   heart: "favorite",
+  cart: "shopping-cart",
 } satisfies IconMapping;
 
 export function IconSymbol({
