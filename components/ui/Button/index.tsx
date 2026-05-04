@@ -1,49 +1,62 @@
-import { useAppTheme } from "@/lib/theme";
-import { Pressable, Text } from "react-native";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { ComponentProps } from "react";
+import { Pressable, Text, View } from "react-native";
+
+import { palette } from "@/constants/design-system";
 import { styles } from "./styles";
 
 type Props = {
   label: string;
   onPress: () => void;
-  variant?: "primary" | "ghost"; // Style du bouton
-  loading?: boolean; // Signal un async en cours
-  disabled?: boolean; // Désactiver le bouton
+  variant?: "primary" | "ghost" | "youtube";
+  icon?: ComponentProps<typeof MaterialIcons>["name"];
+  loading?: boolean;
+  disabled?: boolean;
 };
 
 export function Button({
   label,
   onPress,
   variant = "primary",
+  icon,
   loading = false,
   disabled = false,
 }: Props) {
-  const { colors } = useAppTheme();
-
   const isPrimary = variant === "primary";
+  const isYoutube = variant === "youtube";
+
+  // Détermine le style du bouton en fonction de la variante
+  const btnStyle = isPrimary
+    ? { backgroundColor: palette.accent }
+    : isYoutube
+      ? { backgroundColor: palette.youtube }
+      : [
+          styles.btnGhost,
+          { backgroundColor: palette.surface, borderColor: palette.border },
+        ];
+
+  // Le texte et l'icône sont blancs pour les boutons primary et youtube, et utilisent la couleur de texte principale pour ghost
+  const contentColor =
+    isPrimary || isYoutube ? palette.accentFg : palette.textPrimary;
 
   return (
     <Pressable
       onPress={onPress}
       disabled={loading || disabled}
-      style={[
-        styles.btn,
-        isPrimary
-          ? { backgroundColor: colors.accent }
-          : [
-              styles.btnGhost,
-              { backgroundColor: colors.surface, borderColor: colors.border },
-            ],
-      ]}
+      style={[styles.btn, btnStyle]}
     >
-      <Text
-        style={[
-          styles.text,
-          isPrimary ? styles.textPrimary : styles.textGhost,
-          { color: isPrimary ? colors.accentFg : colors.textMuted },
-        ]}
-      >
-        {label}
-      </Text>
+      <View style={icon ? styles.row : undefined}>
+        {icon && <MaterialIcons name={icon} size={20} color={contentColor} />}
+        <Text
+          style={[
+            styles.text,
+            isPrimary || isYoutube ? styles.textPrimary : styles.textGhost,
+            { color: contentColor },
+          ]}
+        >
+          {label}
+        </Text>
+      </View>
     </Pressable>
   );
 }

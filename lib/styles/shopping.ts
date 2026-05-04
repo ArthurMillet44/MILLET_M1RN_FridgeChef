@@ -1,34 +1,11 @@
 import { palette, radius, spacing, typography } from "@/constants/design-system";
 import { StyleSheet } from "react-native";
 
-export const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: palette.bg,
-  },
+import { common } from "./common";
 
-  // En-tête : titre + bouton "Effacer les cochés"
-  header: {
-    flexDirection: "row",
-    alignItems: "flex-end",
-    justifyContent: "space-between",
-    paddingHorizontal: spacing.xl,
-    paddingTop: spacing.lg,
-    paddingBottom: spacing.md,
-  },
-  title: {
-    fontSize: typography.size.title,
-    fontWeight: typography.weight.black,
-    letterSpacing: typography.tracking.widest,
-    color: palette.accent,
-    lineHeight: 38,
-  },
-  subtitle: {
-    fontSize: typography.size.body,
-    color: palette.textMuted,
-    marginTop: spacing.sm,
-    lineHeight: 20,
-  },
+export const styles = StyleSheet.create({
+  container: common.container,
+
   // Bouton "Effacer les cochés" affiché uniquement si des items sont cochés
   clearBtn: {
     fontSize: typography.size.body,
@@ -48,18 +25,14 @@ export const styles = StyleSheet.create({
 
   // Item de la liste
   item: {
+    ...common.cardShadow,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: palette.white,
     borderRadius: radius.lg,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
     gap: spacing.md,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06,
-    shadowRadius: 4,
-    elevation: 2,
   },
   // Item coché : légèrement transparent
   itemChecked: {
@@ -83,18 +56,5 @@ export const styles = StyleSheet.create({
   itemQuantity: {
     fontSize: typography.size.small,
     color: palette.textMuted,
-  },
-
-  // État vide
-  emptyContainer: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: spacing.md,
-  },
-  emptyText: {
-    fontSize: typography.size.body,
-    color: palette.textMuted,
-    lineHeight: 20,
   },
 });

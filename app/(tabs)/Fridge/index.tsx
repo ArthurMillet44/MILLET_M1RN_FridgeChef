@@ -10,8 +10,11 @@ import {
 } from "react-native";
 
 import { Button } from "@/components/ui/Button";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { Input } from "@/components/ui/Input";
+import { ScreenHeader } from "@/components/ui/ScreenHeader";
 import { palette } from "@/constants/design-system";
+import { useAuth } from "@/lib/auth-context";
 import {
   addIngredient,
   deleteIngredient,
@@ -20,11 +23,10 @@ import {
   type Ingredient,
 } from "@/lib/ingredients";
 import { styles } from "@/lib/styles/fridge";
-import { supabase } from "@/lib/supabase";
 
 export default function FridgeScreen() {
+  const { userId } = useAuth();
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
-  const [userId, setUserId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [name, setName] = useState("");
@@ -36,18 +38,12 @@ export default function FridgeScreen() {
     null,
   );
 
-  // Récupère les ingrédients de l'utilisateur
+  // Charge les ingrédients au montage (userId garanti non-null via AuthContext)
   useEffect(() => {
-    // Récupère la session de l'utilisateur connecté via getSession, aucun réseau requis (session déjà mise en cache dans AsyncStorage)
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) return;
-      setUserId(session.user.id);
-      // getIngredients peut échouer si hors ligne, on affiche juste une liste vide
-      getIngredients(session.user.id)
-        .then(setIngredients)
-        .catch(() => {});
-    });
-  }, []);
+    getIngredients(userId)
+      .then(setIngredients)
+      .catch(() => {});
+  }, [userId]);
 
   // Filtre les ingrédients en fonction de la recherche
   const filtered = search.trim()
@@ -130,6 +126,11 @@ export default function FridgeScreen() {
 
   return (
     <View style={styles.container}>
+      <ScreenHeader
+        title="FRIGO"
+        subtitle={`${count} produit${count !== 1 ? "s" : ""}`}
+      />
+
       {/* Barre de recherche */}
       <View style={styles.searchRow}>
         <View style={styles.searchBox}>
@@ -151,29 +152,19 @@ export default function FridgeScreen() {
         </View>
       </View>
 
-      {/* En-tête de la section d'ingrédients */}
-      <View style={styles.sectionRow}>
-        <Text style={styles.sectionTitle}>Ingrédients</Text>
-        <Text style={styles.sectionCount}>
-          {count} produit{count !== 1 ? "s" : ""}
-        </Text>
-      </View>
-
       {/* Liste des ingrédients */}
       <FlatList
         data={filtered}
         keyExtractor={(item) => item.id}
         style={styles.list}
         contentContainerStyle={
-          filtered.length === 0 ? styles.emptyContainer : styles.listContent
+          filtered.length === 0 ? { flex: 1 } : styles.listContent
         }
         ListEmptyComponent={
-          <>
-            <MaterialIcons name="kitchen" size={48} color={palette.textSoft} />
-            <Text style={styles.emptyText}>
-              {search ? "Aucun résultat." : "Ton frigo est vide."}
-            </Text>
-          </>
+          <EmptyState
+            icon="kitchen"
+            message={search ? "Aucun résultat." : "Ton frigo est vide."}
+          />
         }
         renderItem={({ item }) => (
           <View style={styles.item}>

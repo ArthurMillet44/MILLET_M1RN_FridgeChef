@@ -2,13 +2,15 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback, useState } from "react";
 import {
-  ActivityIndicator,
   FlatList,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
 
+import { EmptyState } from "@/components/ui/EmptyState";
+import { ScreenHeader } from "@/components/ui/ScreenHeader";
+import { Spinner } from "@/components/ui/Spinner";
 import { palette } from "@/constants/design-system";
 import {
   clearCheckedItems,
@@ -16,8 +18,8 @@ import {
   toggleShoppingItem,
   type ShoppingItem,
 } from "@/lib/shopping";
+import { useAuth } from "@/lib/auth-context";
 import { styles } from "@/lib/styles/shopping";
-import { supabase } from "@/lib/supabase";
 
 /**
  * Trie les articles de la liste de courses en mettant les cochés à la fin, puis par ordre de création.
@@ -29,10 +31,9 @@ function sortItems(items: ShoppingItem[]): ShoppingItem[] {
 }
 
 export default function ShoppingScreen() {
+  const { userId } = useAuth();
   // Liste des articles de la liste de courses
   const [items, setItems] = useState<ShoppingItem[]>([]);
-  // ID de l'utilisateur connecté
-  const [userId, setUserId] = useState<string | null>(null);
   // Indique si la liste est en cours de chargement
   const [loading, setLoading] = useState(true);
 
@@ -40,19 +41,11 @@ export default function ShoppingScreen() {
   useFocusEffect(
     useCallback(() => {
       setLoading(true);
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        if (!session) {
-          setLoading(false);
-          return;
-        }
-        setUserId(session.user.id);
-        // getShoppingItems peut échouer si hors ligne, on affiche juste une liste vide
-        getShoppingItems(session.user.id)
-          .then((data) => setItems(sortItems(data)))
-          .catch(() => {})
-          .finally(() => setLoading(false));
-      });
-    }, []),
+      getShoppingItems(userId)
+        .then((data) => setItems(sortItems(data)))
+        .catch(() => {})
+        .finally(() => setLoading(false));
+    }, [userId]),
   );
 
   /**
@@ -75,7 +68,6 @@ export default function ShoppingScreen() {
    * Supprime tous les articles cochés de la liste et de la base.
    */
   async function handleClear() {
-    if (!userId) return;
     setItems((prev) => prev.filter((i) => !i.checked));
     await clearCheckedItems(userId);
   }
@@ -87,48 +79,35 @@ export default function ShoppingScreen() {
 
   return (
     <View style={styles.container}>
-      {/* En-tête -> titre + compteur + bouton d'effacement des cochés */}
-      <View style={styles.header}>
-        <View>
-          <Text style={styles.title}>COURSES</Text>
-          {!loading && (
-            <Text style={styles.subtitle}>
-              {pendingCount} article{pendingCount !== 1 ? "s" : ""} restant
-              {pendingCount !== 1 ? "s" : ""}
-            </Text>
-          )}
-        </View>
-        {hasChecked && (
-          <TouchableOpacity onPress={handleClear}>
-            <Text style={styles.clearBtn}>Effacer les cochés</Text>
-          </TouchableOpacity>
-        )}
-      </View>
+      <ScreenHeader
+        title="COURSES"
+        subtitle={
+          loading
+            ? undefined
+            : `${pendingCount} article${pendingCount !== 1 ? "s" : ""} restant${pendingCount !== 1 ? "s" : ""}`
+        }
+        action={
+          hasChecked ? (
+            <TouchableOpacity onPress={handleClear}>
+              <Text style={styles.clearBtn}>Effacer les cochés</Text>
+            </TouchableOpacity>
+          ) : undefined
+        }
+      />
 
       {/* Contenu -> spinner pendant le chargement, liste sinon */}
       {loading ? (
-        <View style={styles.emptyContainer}>
-          <ActivityIndicator size="large" color={palette.accent} />
-        </View>
+        <Spinner />
       ) : (
         <FlatList
           data={items}
           keyExtractor={(item) => item.id}
           style={styles.list}
           contentContainerStyle={
-            items.length === 0 ? styles.emptyContainer : styles.listContent
+            items.length === 0 ? { flex: 1 } : styles.listContent
           }
           ListEmptyComponent={
-            <>
-              <MaterialIcons
-                name="shopping-cart"
-                size={48}
-                color={palette.textSoft}
-              />
-              <Text style={styles.emptyText}>
-                Ta liste de courses est vide.
-              </Text>
-            </>
+            <EmptyState icon="shopping-cart" message="Ta liste de courses est vide." />
           }
           renderItem={({ item }) => (
             <TouchableOpacity

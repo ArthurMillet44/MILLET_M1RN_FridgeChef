@@ -3,7 +3,6 @@ import { Image } from "expo-image";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import {
-  ActivityIndicator,
   Linking,
   ScrollView,
   Text,
@@ -12,23 +11,25 @@ import {
   View,
 } from "react-native";
 
+import { Button } from "@/components/ui/Button";
+import { MealLoadGuard } from "@/components/ui/MealLoadGuard";
+
 import { palette, spacing } from "@/constants/design-system";
+import { useAuth } from "@/lib/auth-context";
 import { isFavorite, toggleFavorite } from "@/lib/favorites";
 import { getIngredients } from "@/lib/ingredients";
 import { getMealById, getMealIngredients, type MealDetail } from "@/lib/mealdb";
 import { addShoppingItems, getShoppingItems } from "@/lib/shopping";
 import { styles } from "@/lib/styles/recipe-detail";
-import { supabase } from "@/lib/supabase";
 
 export default function RecipeDetailScreen() {
+  const { userId } = useAuth();
   // Identifiant de la recette transmis par la route (ex. /recipe/52772)
   const { id } = useLocalSearchParams<{ id: string }>();
   // Données de la recette
   const [meal, setMeal] = useState<MealDetail | null>(null);
   // Indique si les données sont en cours de chargement pour afficher un spinner
   const [loading, setLoading] = useState(true);
-  // Identifiant de l'utilisateur connecté
-  const [userId, setUserId] = useState<string | null>(null);
   // Indique si la recette est dans les favoris
   const [isFav, setIsFav] = useState(false);
   // Noms des ingrédients du frigo pour le filtre "Générer ma liste"
@@ -50,60 +51,20 @@ export default function RecipeDetailScreen() {
     });
   }, [id]);
 
-  // Récupère l'utilisateur, vérifie les favoris, et charge le frigo + la liste de courses
+  // Vérifie les favoris et charge le frigo + la liste de courses pour le bouton "Générer ma liste"
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) return;
-      setUserId(session.user.id);
-      isFavorite(session.user.id, id).then(setIsFav);
-      // Charge en parallèle le frigo et la liste de courses pour le bouton "Générer ma liste"
-      Promise.all([
-        // Récupère les ingrédients du frigo pour le filtre "Générer ma liste"
-        getIngredients(session.user.id),
-        // Récupère les articles de la liste de courses pour éviter les doublons
-        getShoppingItems(session.user.id),
-      ])
-        // Met à jour les sets locaux avec les noms des ingrédients
-        .then(([fridge, shopping]) => {
-          setFridgeNames(fridge.map((i) => i.name.toLowerCase()));
-          setShoppingNames(shopping.map((i) => i.name.toLowerCase()));
-        })
-        .catch(() => {});
-    });
-  }, [id]);
+    isFavorite(userId, id).then(setIsFav);
+    Promise.all([getIngredients(userId), getShoppingItems(userId)])
+      .then(([fridge, shopping]) => {
+        setFridgeNames(fridge.map((i) => i.name.toLowerCase()));
+        setShoppingNames(shopping.map((i) => i.name.toLowerCase()));
+      })
+      .catch(() => {});
+  }, [id, userId]);
 
-  // Affiche un spinner pendant le chargement
-  if (loading) {
-    return (
-      <>
-        <Stack.Screen options={{ headerShown: false }} />
-        <View
-          style={[
-            styles.container,
-            { alignItems: "center", justifyContent: "center" },
-          ]}
-        >
-          <ActivityIndicator size="large" color={palette.accent} />
-        </View>
-      </>
-    );
-  }
-
-  // Affiche un message si la recette est introuvable
-  if (!meal) {
-    return (
-      <>
-        <Stack.Screen options={{ headerShown: false }} />
-        <View
-          style={[
-            styles.container,
-            { alignItems: "center", justifyContent: "center" },
-          ]}
-        >
-          <Text style={{ color: palette.textMuted }}>Recette introuvable.</Text>
-        </View>
-      </>
-    );
+  // Affiche un spinner pendant le chargement ou un message si la recette est introuvable
+  if (loading || !meal) {
+    return <MealLoadGuard loading={loading} />;
   }
 
   // Récupère la liste des ingrédients et leur quantité
@@ -114,7 +75,6 @@ export default function RecipeDetailScreen() {
    * et pas encore dans la liste.
    */
   async function handleGenerateList() {
-    if (!userId) return;
     // Affiche un état de chargement sur le bouton
     setAddingToList(true);
     try {
@@ -156,13 +116,12 @@ export default function RecipeDetailScreen() {
             style={styles.backBtn}
             onPress={() => router.back()}
           >
-            <MaterialIcons name="arrow-back" size={22} color="#fff" />
+            <MaterialIcons name="arrow-back" size={22} color={palette.white} />
           </TouchableOpacity>
           {/* Bouton de favoris : orange si la recette est dans les favoris, blanc sinon */}
           <TouchableOpacity
             style={styles.favBtn}
             onPress={() => {
-              if (!userId) return;
               toggleFavorite(
                 userId,
                 {
@@ -178,7 +137,7 @@ export default function RecipeDetailScreen() {
             <MaterialIcons
               name={isFav ? "favorite" : "favorite-border"}
               size={22}
-              color={isFav ? palette.accent : "#fff"}
+              color={isFav ? palette.accent : palette.white}
             />
           </TouchableOpacity>
         </View>
@@ -214,46 +173,32 @@ export default function RecipeDetailScreen() {
             <Text style={styles.instructions}>{meal.strInstructions}</Text>
           </View>
 
-          {/* Bouton Mode Cuisine : lance l'affichage étape par étape */}
-          <TouchableOpacity
-            style={styles.cookBtn}
+          {/* Bouton Mode Cuisine qui lance le mode cuisine */}
+          <Button
+            label="Mode Cuisine"
+            icon="restaurant"
             onPress={() =>
               router.push({ pathname: "/cook/[id]", params: { id } })
             }
-          >
-            <MaterialIcons
-              name="restaurant"
-              size={20}
-              color={palette.accentFg}
-            />
-            <Text style={styles.cookBtnText}>Mode Cuisine</Text>
-          </TouchableOpacity>
+          />
 
           {/* Bouton "Générer ma liste" qui ajoute les ingrédients manquants à la liste de courses */}
-          <TouchableOpacity
-            style={styles.shoppingBtn}
+          <Button
+            label={addingToList ? "Ajout en cours..." : "Générer ma liste"}
+            icon="shopping-cart"
+            variant="ghost"
             onPress={handleGenerateList}
-            disabled={addingToList}
-          >
-            <MaterialIcons
-              name="shopping-cart"
-              size={20}
-              color={palette.textPrimary}
-            />
-            <Text style={styles.shoppingBtnText}>
-              {addingToList ? "Ajout en cours..." : "Générer ma liste"}
-            </Text>
-          </TouchableOpacity>
+            loading={addingToList}
+          />
 
           {/* Bouton YouTube si disponible */}
           {meal.strYoutube ? (
-            <TouchableOpacity
-              style={styles.youtubeBtn}
+            <Button
+              label="Voir sur YouTube"
+              icon="play-circle-filled"
+              variant="youtube"
               onPress={() => Linking.openURL(meal.strYoutube)}
-            >
-              <MaterialIcons name="play-circle-filled" size={20} color="#fff" />
-              <Text style={styles.youtubeBtnText}>Voir sur YouTube</Text>
-            </TouchableOpacity>
+            />
           ) : null}
         </View>
       </ScrollView>

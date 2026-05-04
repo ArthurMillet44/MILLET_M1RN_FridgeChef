@@ -1,22 +1,16 @@
-import {
-  palette,
-  radius,
-  spacing,
-  typography,
-} from "@/constants/design-system";
+import { palette, radius, spacing, typography } from "@/constants/design-system";
 import { StyleSheet } from "react-native";
 
+import { common } from "./common";
+
 export const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: palette.bg,
-  },
+  container: common.container,
 
   // Barre de recherche
   searchRow: {
     paddingHorizontal: spacing.xl,
     paddingTop: spacing.md,
-    paddingBottom: spacing.sm,
+    paddingBottom: spacing.md,
   },
   searchBox: {
     flexDirection: "row",
@@ -35,26 +29,6 @@ export const styles = StyleSheet.create({
     color: palette.textPrimary,
   },
 
-  // En-tête de section
-  sectionRow: {
-    flexDirection: "row",
-    alignItems: "baseline",
-    justifyContent: "space-between",
-    paddingHorizontal: spacing.xl,
-    paddingTop: spacing.md,
-    paddingBottom: spacing.sm,
-  },
-  sectionTitle: {
-    fontSize: typography.size.bodyLg,
-    fontWeight: typography.weight.bold,
-    color: palette.textPrimary,
-  },
-  sectionCount: {
-    fontSize: typography.size.small,
-    fontWeight: typography.weight.medium,
-    color: palette.accent,
-  },
-
   // Liste
   list: {
     flex: 1,
@@ -67,18 +41,14 @@ export const styles = StyleSheet.create({
 
   // Item carte
   item: {
+    ...common.cardShadow,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: palette.white,
     borderRadius: radius.lg,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
     gap: spacing.md,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06,
-    shadowRadius: 4,
-    elevation: 2,
   },
   iconPlaceholder: {
     width: 44,
@@ -106,19 +76,6 @@ export const styles = StyleSheet.create({
     padding: spacing.xs,
   },
 
-  // État vide
-  emptyContainer: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: spacing.md,
-  },
-  emptyText: {
-    fontSize: typography.size.body,
-    color: palette.textMuted,
-    lineHeight: 20,
-  },
-
   // Bouton flottant
   fab: {
     position: "absolute",
@@ -140,7 +97,7 @@ export const styles = StyleSheet.create({
   // Modale
   overlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.4)",
+    backgroundColor: palette.imageOverlay,
     justifyContent: "flex-end",
   },
   modalCard: {

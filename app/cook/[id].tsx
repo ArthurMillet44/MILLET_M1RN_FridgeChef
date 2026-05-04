@@ -3,7 +3,6 @@ import { useKeepAwake } from "expo-keep-awake";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import {
-  ActivityIndicator,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -12,6 +11,7 @@ import {
 
 import { NavFooter } from "@/components/cook/NavFooter";
 import { ProgressHeader } from "@/components/cook/ProgressHeader";
+import { MealLoadGuard } from "@/components/ui/MealLoadGuard";
 import { palette } from "@/constants/design-system";
 import { getMealById, type MealDetail } from "@/lib/mealdb";
 import { styles } from "@/lib/styles/cook";
@@ -37,38 +37,9 @@ export default function CookScreen() {
     });
   }, [id]);
 
-  // Affiche un spinner pendant le chargement
-  if (loading) {
-    return (
-      <>
-        <Stack.Screen options={{ headerShown: false }} />
-        <View
-          style={[
-            styles.container,
-            { alignItems: "center", justifyContent: "center" },
-          ]}
-        >
-          <ActivityIndicator size="large" color={palette.accent} />
-        </View>
-      </>
-    );
-  }
-
-  // Affiche un message si la recette est introuvable
-  if (!meal) {
-    return (
-      <>
-        <Stack.Screen options={{ headerShown: false }} />
-        <View
-          style={[
-            styles.container,
-            { alignItems: "center", justifyContent: "center" },
-          ]}
-        >
-          <Text style={{ color: palette.textMuted }}>Recette introuvable.</Text>
-        </View>
-      </>
-    );
+  // Affiche un spinner pendant le chargement ou un message si la recette est introuvable
+  if (loading || !meal) {
+    return <MealLoadGuard loading={loading} />;
   }
 
   // Découpe les instructions en étapes :

@@ -1,7 +1,6 @@
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useEffect, useMemo, useState } from "react";
 import {
-  ActivityIndicator,
   FlatList,
   RefreshControl,
   Text,
@@ -11,13 +10,17 @@ import {
 
 import { MealCard } from "@/components/recipes/Card";
 import { IngredientFilterModal } from "@/components/recipes/IngredientFilter";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { ScreenHeader } from "@/components/ui/ScreenHeader";
+import { Spinner } from "@/components/ui/Spinner";
 import { palette } from "@/constants/design-system";
+import { useAuth } from "@/lib/auth-context";
 import { getIngredients } from "@/lib/ingredients";
 import { searchByIngredient, type MealSummary } from "@/lib/mealdb";
 import { styles } from "@/lib/styles/recipes";
-import { supabase } from "@/lib/supabase";
 
 export default function RecipesScreen() {
+  const { userId } = useAuth();
   const [allMeals, setAllMeals] = useState<MealSummary[]>([]);
   // Pour chaque recette, quels ingrédients du frigo permettent de la trouver
   const [mealIngredients, setMealIngredients] = useState<
@@ -51,12 +54,8 @@ export default function RecipesScreen() {
     // remet le filtre à zéro
     setSelectedIngredient(null);
     try {
-      // Récupère la session de l'utilisateur connecté via getSession, aucun réseau requis (session déjà mise en cache dans AsyncStorage)
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) return;
-
       // Récupère ce qu'il y a dans le frigo
-      const ingredients = await getIngredients(session.user.id);
+      const ingredients = await getIngredients(userId);
       if (ingredients.length === 0) {
         // montre le message "frigo vide"
         setEmptyFridge(true);
@@ -122,19 +121,18 @@ export default function RecipesScreen() {
 
   return (
     <View style={styles.container}>
-      {/* En-tête avec titre et sous-titre selon le nombre de recette */}
-      <View style={styles.header}>
-        <Text style={styles.title}>RECETTES</Text>
-        <Text style={styles.subtitle}>
-          {loading
+      <ScreenHeader
+        title="RECETTES"
+        subtitle={
+          loading
             ? "Recherche en cours..."
             : emptyFridge
               ? "Ajoute des ingrédients à ton frigo."
               : error
                 ? "Erreur de chargement."
-                : `${count} recette${count !== 1 ? "s" : ""} trouvée${count !== 1 ? "s" : ""}.`}
-        </Text>
-      </View>
+                : `${count} recette${count !== 1 ? "s" : ""} trouvée${count !== 1 ? "s" : ""}.`
+        }
+      />
 
       {/* Filtre par ingrédient */}
       {ingredientNames.length > 0 && !loading && !error && (
@@ -147,9 +145,7 @@ export default function RecipesScreen() {
 
       {/* Contenu principal selon l'état */}
       {loading ? (
-        <View style={styles.emptyContainer}>
-          <ActivityIndicator size="large" color={palette.accent} />
-        </View>
+        <Spinner />
       ) : error ? (
         <View style={styles.emptyContainer}>
           <MaterialIcons name="wifi-off" size={48} color={palette.textSoft} />
@@ -162,13 +158,10 @@ export default function RecipesScreen() {
           </TouchableOpacity>
         </View>
       ) : emptyFridge ? (
-        <View style={styles.emptyContainer}>
-          <MaterialIcons name="restaurant" size={48} color={palette.textSoft} />
-          <Text style={styles.emptyText}>
-            Ajoute des ingrédients à ton frigo pour voir des suggestions de
-            recettes.
-          </Text>
-        </View>
+        <EmptyState
+          icon="restaurant"
+          message="Ajoute des ingrédients à ton frigo pour voir des suggestions de recettes."
+        />
       ) : (
         // Grille 2 colonnes
         <FlatList
@@ -176,7 +169,7 @@ export default function RecipesScreen() {
           keyExtractor={(item) => item.idMeal}
           numColumns={2}
           columnWrapperStyle={{ gap: 8 }}
-          contentContainerStyle={styles.grid}
+          contentContainerStyle={filteredMeals.length === 0 ? { flex: 1 } : styles.grid}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
@@ -186,11 +179,7 @@ export default function RecipesScreen() {
             />
           }
           ListEmptyComponent={
-            <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>
-                Aucune recette pour cet ingrédient.
-              </Text>
-            </View>
+            <EmptyState icon="search-off" message="Aucune recette pour cet ingrédient." />
           }
           renderItem={({ item }) => <MealCard meal={item} />}
         />

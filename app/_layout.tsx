@@ -4,8 +4,8 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import "react-native-reanimated";
 
+import { AuthProvider } from "@/lib/auth-context";
 import { supabase } from "@/lib/supabase";
-import { AppThemeProvider } from "@/lib/theme";
 import SignInScreen from "./SignIn";
 
 export const unstable_settings = {
@@ -33,10 +33,10 @@ export default function RootLayout() {
   }, []);
 
   return (
-    <AppThemeProvider>
-      <ThemeProvider value={DefaultTheme}>
-        {userId ? (
-          // Utilisateur connecté → accès à l'application
+    <ThemeProvider value={DefaultTheme}>
+      {userId ? (
+        // Utilisateur connecté → userId garanti non-null, exposé via AuthProvider
+        <AuthProvider userId={userId}>
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen
@@ -44,12 +44,12 @@ export default function RootLayout() {
               options={{ presentation: "modal", title: "Modal" }}
             />
           </Stack>
-        ) : (
-          // Utilisateur non connecté → écran de connexion/inscription
-          <SignInScreen />
-        )}
-        <StatusBar style="dark" />
-      </ThemeProvider>
-    </AppThemeProvider>
+        </AuthProvider>
+      ) : (
+        // Utilisateur non connecté → écran de connexion/inscription
+        <SignInScreen />
+      )}
+      <StatusBar style="dark" />
+    </ThemeProvider>
   );
 }
