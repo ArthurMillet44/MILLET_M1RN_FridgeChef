@@ -10,7 +10,7 @@ export const styles = StyleSheet.create({
   searchRow: {
     paddingHorizontal: spacing.xl,
     paddingTop: spacing.md,
-    paddingBottom: spacing.sm,
+    paddingBottom: spacing.md,
   },
   searchBox: {
     flexDirection: "row",
@@ -27,26 +27,6 @@ export const styles = StyleSheet.create({
     flex: 1,
     fontSize: typography.size.body,
     color: palette.textPrimary,
-  },
-
-  // En-tête de section
-  sectionRow: {
-    flexDirection: "row",
-    alignItems: "baseline",
-    justifyContent: "space-between",
-    paddingHorizontal: spacing.xl,
-    paddingTop: spacing.md,
-    paddingBottom: spacing.sm,
-  },
-  sectionTitle: {
-    fontSize: typography.size.bodyLg,
-    fontWeight: typography.weight.bold,
-    color: palette.textPrimary,
-  },
-  sectionCount: {
-    fontSize: typography.size.small,
-    fontWeight: typography.weight.medium,
-    color: palette.accent,
   },
 
   // Liste

@@ -9,6 +9,7 @@ import {
 } from "react-native";
 
 import { EmptyState } from "@/components/ui/EmptyState";
+import { ScreenHeader } from "@/components/ui/ScreenHeader";
 import { Spinner } from "@/components/ui/Spinner";
 import { palette } from "@/constants/design-system";
 import {
@@ -78,23 +79,21 @@ export default function ShoppingScreen() {
 
   return (
     <View style={styles.container}>
-      {/* En-tête -> titre + compteur + bouton d'effacement des cochés */}
-      <View style={styles.header}>
-        <View>
-          <Text style={styles.title}>COURSES</Text>
-          {!loading && (
-            <Text style={styles.subtitle}>
-              {pendingCount} article{pendingCount !== 1 ? "s" : ""} restant
-              {pendingCount !== 1 ? "s" : ""}
-            </Text>
-          )}
-        </View>
-        {hasChecked && (
-          <TouchableOpacity onPress={handleClear}>
-            <Text style={styles.clearBtn}>Effacer les cochés</Text>
-          </TouchableOpacity>
-        )}
-      </View>
+      <ScreenHeader
+        title="COURSES"
+        subtitle={
+          loading
+            ? undefined
+            : `${pendingCount} article${pendingCount !== 1 ? "s" : ""} restant${pendingCount !== 1 ? "s" : ""}`
+        }
+        action={
+          hasChecked ? (
+            <TouchableOpacity onPress={handleClear}>
+              <Text style={styles.clearBtn}>Effacer les cochés</Text>
+            </TouchableOpacity>
+          ) : undefined
+        }
+      />
 
       {/* Contenu -> spinner pendant le chargement, liste sinon */}
       {loading ? (

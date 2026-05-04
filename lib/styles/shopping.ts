@@ -6,17 +6,6 @@ import { common } from "./common";
 export const styles = StyleSheet.create({
   container: common.container,
 
-  // En-tête : titre + bouton "Effacer les cochés"
-  header: {
-    flexDirection: "row",
-    alignItems: "flex-end",
-    justifyContent: "space-between",
-    paddingHorizontal: spacing.xl,
-    paddingTop: spacing.lg,
-    paddingBottom: spacing.md,
-  },
-  title: common.screenTitle,
-  subtitle: common.screenSubtitle,
   // Bouton "Effacer les cochés" affiché uniquement si des items sont cochés
   clearBtn: {
     fontSize: typography.size.body,

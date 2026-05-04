@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Input } from "@/components/ui/Input";
+import { ScreenHeader } from "@/components/ui/ScreenHeader";
 import { palette } from "@/constants/design-system";
 import { useAuth } from "@/lib/auth-context";
 import {
@@ -125,6 +126,11 @@ export default function FridgeScreen() {
 
   return (
     <View style={styles.container}>
+      <ScreenHeader
+        title="FRIGO"
+        subtitle={`${count} produit${count !== 1 ? "s" : ""}`}
+      />
+
       {/* Barre de recherche */}
       <View style={styles.searchRow}>
         <View style={styles.searchBox}>
@@ -144,14 +150,6 @@ export default function FridgeScreen() {
             </TouchableOpacity>
           )}
         </View>
-      </View>
-
-      {/* En-tête de la section d'ingrédients */}
-      <View style={styles.sectionRow}>
-        <Text style={styles.sectionTitle}>Ingrédients</Text>
-        <Text style={styles.sectionCount}>
-          {count} produit{count !== 1 ? "s" : ""}
-        </Text>
       </View>
 
       {/* Liste des ingrédients */}

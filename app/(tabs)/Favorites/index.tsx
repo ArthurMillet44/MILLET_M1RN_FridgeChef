@@ -1,9 +1,10 @@
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback, useState } from "react";
-import { FlatList, Text, View } from "react-native";
+import { FlatList, View } from "react-native";
 
 import { MealCard } from "@/components/recipes/Card";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { ScreenHeader } from "@/components/ui/ScreenHeader";
 import { Spinner } from "@/components/ui/Spinner";
 import { useAuth } from "@/lib/auth-context";
 import { getFavorites } from "@/lib/favorites";
@@ -30,15 +31,14 @@ export default function FavoritesScreen() {
 
   return (
     <View style={styles.container}>
-      {/* En-tête */}
-      <View style={styles.header}>
-        <Text style={styles.title}>FAVORIS</Text>
-        <Text style={styles.subtitle}>
-          {loading
+      <ScreenHeader
+        title="FAVORIS"
+        subtitle={
+          loading
             ? "Chargement..."
-            : `${meals.length} recette${meals.length !== 1 ? "s" : ""} sauvegardée${meals.length !== 1 ? "s" : ""}.`}
-        </Text>
-      </View>
+            : `${meals.length} recette${meals.length !== 1 ? "s" : ""} sauvegardée${meals.length !== 1 ? "s" : ""}.`
+        }
+      />
 
       {/* Contenu avec réutilisation du composant Card de la page de recettes */}
       {loading ? (

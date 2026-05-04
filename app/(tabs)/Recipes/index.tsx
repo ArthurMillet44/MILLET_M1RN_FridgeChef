@@ -11,6 +11,7 @@ import {
 import { MealCard } from "@/components/recipes/Card";
 import { IngredientFilterModal } from "@/components/recipes/IngredientFilter";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { ScreenHeader } from "@/components/ui/ScreenHeader";
 import { Spinner } from "@/components/ui/Spinner";
 import { palette } from "@/constants/design-system";
 import { useAuth } from "@/lib/auth-context";
@@ -120,19 +121,18 @@ export default function RecipesScreen() {
 
   return (
     <View style={styles.container}>
-      {/* En-tête avec titre et sous-titre selon le nombre de recette */}
-      <View style={styles.header}>
-        <Text style={styles.title}>RECETTES</Text>
-        <Text style={styles.subtitle}>
-          {loading
+      <ScreenHeader
+        title="RECETTES"
+        subtitle={
+          loading
             ? "Recherche en cours..."
             : emptyFridge
               ? "Ajoute des ingrédients à ton frigo."
               : error
                 ? "Erreur de chargement."
-                : `${count} recette${count !== 1 ? "s" : ""} trouvée${count !== 1 ? "s" : ""}.`}
-        </Text>
-      </View>
+                : `${count} recette${count !== 1 ? "s" : ""} trouvée${count !== 1 ? "s" : ""}.`
+        }
+      />
 
       {/* Filtre par ingrédient */}
       {ingredientNames.length > 0 && !loading && !error && (
