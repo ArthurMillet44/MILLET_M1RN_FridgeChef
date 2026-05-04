@@ -14,8 +14,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { palette } from "@/constants/design-system";
 import { supabase } from "@/lib/supabase";
-import { useAppTheme } from "@/lib/theme";
 import { styles } from "@/lib/styles/sign-in";
 
 type Mode = "login" | "signup";
@@ -31,26 +31,24 @@ function ModeTab({
   mode: Mode;
   onToggle: (m: Mode) => void;
 }) {
-  const { colors } = useAppTheme();
-
   return (
     <View
       style={[
         styles.tabContainer,
-        { backgroundColor: colors.surface, borderColor: colors.border },
+        { backgroundColor: palette.surface, borderColor: palette.border },
       ]}
     >
       <Pressable
         style={[
           styles.tabItem,
-          mode === "login" && { backgroundColor: colors.accent },
+          mode === "login" && { backgroundColor: palette.accent },
         ]}
         onPress={() => onToggle("login")}
       >
         <Text
           style={[
             styles.tabText,
-            { color: mode === "login" ? colors.accentFg : colors.textMuted },
+            { color: mode === "login" ? palette.accentFg : palette.textMuted },
           ]}
         >
           Connexion
@@ -59,14 +57,14 @@ function ModeTab({
       <Pressable
         style={[
           styles.tabItem,
-          mode === "signup" && { backgroundColor: colors.accent },
+          mode === "signup" && { backgroundColor: palette.accent },
         ]}
         onPress={() => onToggle("signup")}
       >
         <Text
           style={[
             styles.tabText,
-            { color: mode === "signup" ? colors.accentFg : colors.textMuted },
+            { color: mode === "signup" ? palette.accentFg : palette.textMuted },
           ]}
         >
           S'inscrire
@@ -81,7 +79,6 @@ function ModeTab({
  * Le mode courant détermine quels champs sont affichés et quelle API Supabase est appelée.
  */
 export default function SignInScreen() {
-  const { colors } = useAppTheme();
   const insets = useSafeAreaInsets();
 
   // Mode d'authentification courant : "login" ou "signup"
@@ -136,7 +133,7 @@ export default function SignInScreen() {
       style={[
         styles.root,
         {
-          backgroundColor: colors.bg,
+          backgroundColor: palette.bg,
           paddingTop: insets.top,
           paddingBottom: insets.bottom,
         },
@@ -148,11 +145,11 @@ export default function SignInScreen() {
         style={styles.keyboard}
       >
         <View style={styles.brand}>
-          <View style={[styles.brandDot, { backgroundColor: colors.accent }]} />
-          <Text style={[styles.brandName, { color: colors.textSoft }]}>
+          <View style={[styles.brandDot, { backgroundColor: palette.accent }]} />
+          <Text style={[styles.brandName, { color: palette.textSoft }]}>
             FridgeChef
           </Text>
-          <Text style={[styles.brandSub, { color: colors.textSoft }]}>
+          <Text style={[styles.brandSub, { color: palette.textSoft }]}>
             {mode === "login"
               ? "Bienvenue, connectez-vous pour continuer."
               : "Créez votre compte en quelques secondes."}
@@ -182,7 +179,7 @@ export default function SignInScreen() {
             />
           )}
           {error ? (
-            <Text style={[styles.errorText, { color: colors.error }]}>
+            <Text style={[styles.errorText, { color: palette.error }]}>
               {error}
             </Text>
           ) : null}

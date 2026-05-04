@@ -1,7 +1,8 @@
-import { useAppTheme } from "@/lib/theme";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { ComponentProps } from "react";
 import { Pressable, Text, View } from "react-native";
+
+import { palette } from "@/constants/design-system";
 import { styles } from "./styles";
 
 type Props = {
@@ -21,24 +22,22 @@ export function Button({
   loading = false,
   disabled = false,
 }: Props) {
-  const { colors } = useAppTheme();
-
   const isPrimary = variant === "primary";
   const isYoutube = variant === "youtube";
 
   // Détermine le style du bouton en fonction de la variante
   const btnStyle = isPrimary
-    ? { backgroundColor: colors.accent }
+    ? { backgroundColor: palette.accent }
     : isYoutube
-      ? { backgroundColor: colors.youtube }
+      ? { backgroundColor: palette.youtube }
       : [
           styles.btnGhost,
-          { backgroundColor: colors.surface, borderColor: colors.border },
+          { backgroundColor: palette.surface, borderColor: palette.border },
         ];
 
   // Le texte et l'icône sont blancs pour les boutons primary et youtube, et utilisent la couleur de texte principale pour ghost
   const contentColor =
-    isPrimary || isYoutube ? colors.accentFg : colors.textPrimary;
+    isPrimary || isYoutube ? palette.accentFg : palette.textPrimary;
 
   return (
     <Pressable

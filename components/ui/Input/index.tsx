@@ -1,6 +1,7 @@
-import { useAppTheme } from "@/lib/theme";
 import { useState } from "react";
 import { Text, TextInput, View } from "react-native";
+
+import { palette } from "@/constants/design-system";
 import { styles } from "./styles";
 
 type Props = {
@@ -25,14 +26,13 @@ export function Input({
   placeholder,
   autoFocus = false,
 }: Props) {
-  const { colors } = useAppTheme();
   const [focused, setFocused] = useState(false);
 
   return (
     <View style={styles.wrapper}>
-      <Text style={[styles.label, { color: colors.textMuted }]}>{label}</Text>
+      <Text style={[styles.label, { color: palette.textMuted }]}>{label}</Text>
       <TextInput
-        style={[styles.input, { color: colors.textPrimary }]}
+        style={[styles.input, { color: palette.textPrimary }]}
         value={value}
         onChangeText={onChangeText}
         secureTextEntry={secureTextEntry}
@@ -40,14 +40,14 @@ export function Input({
         autoCorrect={false}
         autoFocus={autoFocus}
         placeholder={placeholder}
-        placeholderTextColor={colors.textSoft}
+        placeholderTextColor={palette.textSoft}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
       />
       <View
         style={[
           styles.lineTrack,
-          { backgroundColor: focused ? colors.accent : colors.border },
+          { backgroundColor: focused ? palette.accent : palette.border },
         ]}
       />
     </View>
