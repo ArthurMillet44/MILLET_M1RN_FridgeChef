@@ -116,7 +116,7 @@ export default function RecipeDetailScreen() {
             style={styles.backBtn}
             onPress={() => router.back()}
           >
-            <MaterialIcons name="arrow-back" size={22} color="#fff" />
+            <MaterialIcons name="arrow-back" size={22} color={palette.white} />
           </TouchableOpacity>
           {/* Bouton de favoris : orange si la recette est dans les favoris, blanc sinon */}
           <TouchableOpacity
@@ -137,7 +137,7 @@ export default function RecipeDetailScreen() {
             <MaterialIcons
               name={isFav ? "favorite" : "favorite-border"}
               size={22}
-              color={isFav ? palette.accent : "#fff"}
+              color={isFav ? palette.accent : palette.white}
             />
           </TouchableOpacity>
         </View>
