@@ -12,7 +12,7 @@ import {
 } from "react-native";
 
 import { Button } from "@/components/ui/Button";
-import { Spinner } from "@/components/ui/Spinner";
+import { MealLoadGuard } from "@/components/ui/MealLoadGuard";
 
 import { palette, spacing } from "@/constants/design-system";
 import { useAuth } from "@/lib/auth-context";
@@ -62,33 +62,9 @@ export default function RecipeDetailScreen() {
       .catch(() => {});
   }, [id, userId]);
 
-  // Affiche un spinner pendant le chargement
-  if (loading) {
-    return (
-      <>
-        <Stack.Screen options={{ headerShown: false }} />
-        <View style={styles.container}>
-          <Spinner />
-        </View>
-      </>
-    );
-  }
-
-  // Affiche un message si la recette est introuvable
-  if (!meal) {
-    return (
-      <>
-        <Stack.Screen options={{ headerShown: false }} />
-        <View
-          style={[
-            styles.container,
-            { alignItems: "center", justifyContent: "center" },
-          ]}
-        >
-          <Text style={{ color: palette.textMuted }}>Recette introuvable.</Text>
-        </View>
-      </>
-    );
+  // Affiche un spinner pendant le chargement ou un message si la recette est introuvable
+  if (loading || !meal) {
+    return <MealLoadGuard loading={loading} />;
   }
 
   // Récupère la liste des ingrédients et leur quantité
