@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import {
   FlatList,
   Modal,
+  RefreshControl,
   Text,
   TextInput,
   TouchableOpacity,
@@ -33,17 +34,29 @@ export default function FridgeScreen() {
   // Quantité saisie dans la modale
   const [quantity, setQuantity] = useState("");
   const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   // Ingrédient en cours de modification
   const [editingIngredient, setEditingIngredient] = useState<Ingredient | null>(
     null,
   );
 
-  // Charge les ingrédients au montage (userId garanti non-null via AuthContext)
-  useEffect(() => {
-    getIngredients(userId)
+  function loadIngredients() {
+    return getIngredients(userId)
       .then(setIngredients)
       .catch(() => {});
+  }
+
+  // userId garanti non-null via AuthContext
+  useEffect(() => {
+    loadIngredients();
   }, [userId]);
+
+  // Rafraîchit la liste des ingrédients
+  async function handleRefresh() {
+    setRefreshing(true);
+    await loadIngredients();
+    setRefreshing(false);
+  }
 
   // Filtre les ingrédients en fonction de la recherche
   const filtered = search.trim()
@@ -159,6 +172,14 @@ export default function FridgeScreen() {
         style={styles.list}
         contentContainerStyle={
           filtered.length === 0 ? { flex: 1 } : styles.listContent
+        }
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            tintColor={palette.accent}
+            colors={[palette.accent]}
+          />
         }
         ListEmptyComponent={
           <EmptyState

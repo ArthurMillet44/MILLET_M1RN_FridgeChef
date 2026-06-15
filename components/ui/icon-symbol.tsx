@@ -18,6 +18,7 @@ const MAPPING = {
   recipes: "restaurant",
   heart: "favorite",
   cart: "shopping-cart",
+  barcode: "qr-code-scanner",
 } satisfies IconMapping;
 
 export function IconSymbol({
