@@ -1,76 +1,78 @@
-# Welcome to your Expo app 👋
+# FridgeChef
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Sujet 7 - Transforme tes restes en chef-d'œuvre culinaire
 
-## Get started
+Application mobile React Native / Expo qui propose des recettes réalisables à partir des ingrédients disponibles dans ton frigo.
 
-1. Install dependencies
+## Équipe
 
-   ```bash
-   npm install
-   ```
+| Prénom | Nom    | Contribution                                                                                                                                                        |
+| ------ | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Arthur | Millet | Projet complet : auth, frigo virtuel, suggestions de recettes, fiche recette, mode cuisine, favoris, liste de courses, scanner de code-barres, traduction française |
 
-2. Start the app
+## Installation
 
-   ```bash
-   npx expo start
-   ```
+### Variables d'environnement
 
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+copier le fichier `.env.example` en `.env` et remplir les valeurs :
 
 ```bash
-npm run reset-project
+cp .env.example .env
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### Installer les dépendances
 
-## Learn more
+```bash
+npm install
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+Si `npm install` échoue (conflits de versions, erreurs réseau...), utilise yarn à la place :
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```bash
+yarn
+```
 
-## Join the community
+### 3. Lancer l'application
 
-Join our community of developers creating universal apps.
+```bash
+npx expo start
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Scanne ensuite le QR code avec **Expo Go**.
 
-# Instructions :
+L'appareil mobile et la machine qui lance le serveur Expo doivent être sur le même réseau Wi-Fi. Si ce n'est pas le cas l'app ne se chargera pas.
 
-## FridgeChef
+Si cela ne fonctionne toujours pas, tentez de lancer l'app en mode tunnel :
 
-### CONTEXTE CLIENT
+```bash
+npx expo start --tunnel
+```
 
-Votre client veut une app qui aide à cuisiner avec ce qu'on a déjà chez soi : on entre ses ingrédients, l'app propose des recettes réalisables et mémorise les favoris sur le compte utilisateur.
+## Variables d'environnement
 
-### API IMPOSÉE
+| Variable                               | Description                      |
+| -------------------------------------- | -------------------------------- |
+| `EXPO_PUBLIC_SUPABASE_URL`             | URL du projet Supabase           |
+| `EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Clé publique Supabase (anon key) |
+| `EXPO_PUBLIC_MEAL_DB_URL`              | URL de base de l'API TheMealDB   |
 
-TheMealDB — themealdb.com/api.php Entièrement gratuite, sans clé. Endpoints : /search.php , /filter.php , /lookup.php , /categories.php .
+## Librairies utilisées
 
-### FONCTIONNALITÉS OBLIGATOIRES
+| Librairie                                   | Rôle                   | Justification                                                                      |
+| ------------------------------------------- | ---------------------- | ---------------------------------------------------------------------------------- |
+| `expo-router`                               | Navigation             | -                                                                                  |
+| `@supabase/supabase-js`                     | Base de données + Auth | Backend avec auth email/password et stockage des données utilisateur               |
+| `@react-native-async-storage/async-storage` | Cache local            | Persistance hors-ligne des favoris et cache des traductions                        |
+| `expo-camera`                               | Scanner code-barres    | Accès natif à la caméra pour scanner les codes des produits alimentaires           |
+| `expo-image`                                | Affichage d'images     | Meilleure performance et cache automatique par rapport au composant `Image` natif  |
+| `expo-keep-awake`                           | Mode cuisine           | Empêche l'écran de se mettre en veille pendant la lecture des étapes d'une recette |
+| `react-native-reanimated`                   | Animations             | Animations inclues dans expo                                                       |
+| `@expo/vector-icons`                        | Icônes                 | Collection Material Icons incluse dans Expo                                        |
 
-- Authentification : Inscription et connexion via Supabase Auth (email + mot de passe)
-- Frigo virtuel : Écran listant les ingrédients disponibles avec ajout, modification et suppression — données persistées dans Supabase
-- Suggestions de recettes : Basées sur les ingrédients du frigo (requête par ingrédient principal), affichage en grille avec photo, nom et catégorie
-- Fiche recette complète : Photo, catégorie, origine, liste des ingrédients avec quantités, instructions étape par étape, lien YouTube si disponible
-- Mode cuisine : Affichage plein écran étape par étape avec boutons suivant/précédent — écran qui ne se met pas en veille ( expo-keep-awake )
-- Favoris : Recettes favorites sauvegardées dans Supabase, consultables hors-ligne via un cache local
+### API externes
 
-### FONCTIONNALITÉS BONUS (+1 PT CHACUNE, MAX +2)
-
-- Scanner de code-barres produit (expo-barcode-scanner ) pour ajouter un ingrédient au frigo par scan
-- Liste de courses générée automatiquement à partir des ingrédients manquants d'une recette, avec cases à cocher
+| API                                                    | Usage                                                                                 |
+| ------------------------------------------------------ | ------------------------------------------------------------------------------------- |
+| **TheMealDB** (`themealdb.com/api/json/v1/1`)          | Recherche de recettes par ingrédient, détail complet d'une recette                    |
+| **Open Food Facts** (`world.openfoodfacts.org/api/v0`) | Informations produit à partir d'un code-barres scanné                                 |
+| **MyMemory** (`api.mymemory.translated.net`)           | Traduction automatique EN→FR des noms et instructions de recettes (gratuit, sans clé) |

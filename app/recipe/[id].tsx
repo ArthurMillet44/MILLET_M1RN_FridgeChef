@@ -19,6 +19,7 @@ import { useAuth } from "@/lib/auth-context";
 import { isFavorite, toggleFavorite } from "@/lib/favorites";
 import { getIngredients } from "@/lib/ingredients";
 import { getMealById, getMealIngredients, type MealDetail } from "@/lib/mealdb";
+import { translateMeal } from "@/lib/translate";
 import { addShoppingItems, getShoppingItems } from "@/lib/shopping";
 import { styles } from "@/lib/styles/recipe-detail";
 
@@ -43,10 +44,10 @@ export default function RecipeDetailScreen() {
   // Largeur de chaque carte d'ingrédient pour en afficher 3 par ligne
   const cardWidth = Math.floor((width - spacing.xl * 2 - spacing.sm * 2) / 3);
 
-  // Charge la recette dès que l'id est connu (ou change)
+  // Charge et traduit la recette dès que l'id est connu (ou change)
   useEffect(() => {
-    getMealById(id).then((data) => {
-      setMeal(data);
+    getMealById(id).then(async (data) => {
+      setMeal(data ? await translateMeal(data) : null);
       setLoading(false);
     });
   }, [id]);

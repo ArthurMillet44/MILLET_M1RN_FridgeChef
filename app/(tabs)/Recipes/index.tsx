@@ -17,6 +17,7 @@ import { palette } from "@/constants/design-system";
 import { useAuth } from "@/lib/auth-context";
 import { getIngredients } from "@/lib/ingredients";
 import { searchByIngredient, type MealSummary } from "@/lib/mealdb";
+import { toEnglishIngredient, translateMealSummary } from "@/lib/translate";
 import { styles } from "@/lib/styles/recipes";
 
 export default function RecipesScreen() {
@@ -73,7 +74,9 @@ export default function RecipesScreen() {
       // Cherche les recettes pour chaque ingrédient
       const results = await Promise.all(
         ingredients.map(async (i) => {
-          const meals = await searchByIngredient(i.name);
+          // Convertit le nom français en anglais avant d'interroger TheMealDB
+          const englishName = toEnglishIngredient(i.name);
+          const meals = await searchByIngredient(englishName);
           return { ingredient: i.name, meals };
         }),
       );
@@ -96,8 +99,17 @@ export default function RecipesScreen() {
         }
       }
 
-      // sauvegarde la liste finale des recettes
-      setAllMeals(merged);
+      // Traduit les noms par lots de 10 pour ne pas surcharger l'API MyMemory
+      const translated: MealSummary[] = [];
+      const batchSize = 10;
+      for (let i = 0; i < merged.length; i += batchSize) {
+        const batch = await Promise.all(
+          merged.slice(i, i + batchSize).map(translateMealSummary),
+        );
+        translated.push(...batch);
+      }
+      // sauvegarde la liste finale des recettes avec noms traduits
+      setAllMeals(translated);
       // sauvegarde les liens recette → ingrédients
       setMealIngredients(map);
     } catch {

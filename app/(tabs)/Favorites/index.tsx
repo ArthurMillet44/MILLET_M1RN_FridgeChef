@@ -8,6 +8,7 @@ import { ScreenHeader } from "@/components/ui/ScreenHeader";
 import { Spinner } from "@/components/ui/Spinner";
 import { useAuth } from "@/lib/auth-context";
 import { getFavorites } from "@/lib/favorites";
+import { translateMealSummary } from "@/lib/translate";
 import type { MealSummary } from "@/lib/mealdb";
 import { styles } from "@/lib/styles/favorites";
 
@@ -22,8 +23,9 @@ export default function FavoritesScreen() {
   useFocusEffect(
     useCallback(() => {
       setLoading(true);
-      getFavorites(userId).then((favs) => {
-        setMeals(favs);
+      getFavorites(userId).then(async (favs) => {
+        const translated = await Promise.all(favs.map(translateMealSummary));
+        setMeals(translated);
         setLoading(false);
       });
     }, [userId]),

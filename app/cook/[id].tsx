@@ -14,6 +14,7 @@ import { ProgressHeader } from "@/components/cook/ProgressHeader";
 import { MealLoadGuard } from "@/components/ui/MealLoadGuard";
 import { palette } from "@/constants/design-system";
 import { getMealById, type MealDetail } from "@/lib/mealdb";
+import { translateMeal } from "@/lib/translate";
 import { styles } from "@/lib/styles/cook";
 
 export default function CookScreen() {
@@ -29,10 +30,10 @@ export default function CookScreen() {
   // Index de l'étape courante (démarre à 0)
   const [step, setStep] = useState(0);
 
-  // Charge la recette au montage
+  // Charge et traduit la recette au montage (les étapes sont découpées depuis les instructions traduites)
   useEffect(() => {
-    getMealById(id).then((data) => {
-      setMeal(data);
+    getMealById(id).then(async (data) => {
+      setMeal(data ? await translateMeal(data) : null);
       setLoading(false);
     });
   }, [id]);
